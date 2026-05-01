@@ -1,0 +1,132 @@
+CREATE TABLE USER (
+    User_ID INT PRIMARY KEY,
+    Profile_Name VARCHAR(50) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    F_Name VARCHAR(50),
+    M_Init CHAR(1),
+    L_Name VARCHAR(50),
+    Player_Flag BOOLEAN,
+    Creator_Flag BOOLEAN
+);
+
+-- USER_EMAIL table
+CREATE TABLE USER_EMAIL (
+User_ID INT,
+Email VARCHAR(100) NOT NULL,
+PRIMARY KEY (User_ID, Email),
+FOREIGN KEY (User_ID) REFERENCES USER(User_ID)
+);
+
+-- CREATOR_EDIT_CATALOG table
+CREATE TABLE CREATOR_EDIT_CATALOG (
+Creator_ID INT,
+Catalog_ID INT,
+PRIMARY KEY (Creator_ID, Catalog_ID),
+FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID)
+);
+
+-- ITEM_CATALOG table
+CREATE TABLE ITEM_CATALOG (
+Catalog_ID INT PRIMARY KEY,
+Name VARCHAR(100) NOT NULL
+);
+
+-- USER_EDIT_INVENTORY table
+CREATE TABLE USER_EDIT_INVENTORY (
+User_ID INT,
+Catalog_ID INT,
+Inventory_ID INT,
+PRIMARY KEY (User_ID, Catalog_ID, Inventory_ID),
+FOREIGN KEY (User_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+);
+
+-- INVENTORY table
+CREATE TABLE INVENTORY (
+Catalog_ID INT,
+Inventory_ID INT,
+Name VARCHAR(100),
+PRIMARY KEY (Catalog_ID, Inventory_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+);
+
+-- WEAPON_ARMOR_EQUIPPED table
+CREATE TABLE WEAPON_ARMOR_EQUIPPED (
+Item_ID INT,
+Catalog_ID INT,
+Inventory_ID INT,
+PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID),
+FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID)
+);
+
+-- CONTAINS_ITEM table
+CREATE TABLE CONTAINS_ITEM (
+Inventory_ID INT,
+Catalog_ID INT,
+Item_ID INT,
+Quantity INT,
+PRIMARY KEY (Inventory_ID, Catalog_ID, Item_ID),
+FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+);
+
+-- ITEM table
+CREATE TABLE ITEM (
+Item_ID INT,
+Catalog_ID INT,
+Weight DECIMAL(10,2),
+Overall_Quan INT,
+Description TEXT,
+Category VARCHAR(50),
+Rarity VARCHAR(50),
+Name VARCHAR(100),
+C_Flag BOOLEAN,
+R_Flag BOOLEAN,
+WA_Flag BOOLEAN,
+UI_Flag BOOLEAN,
+PRIMARY KEY (Item_ID, Catalog_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+);
+
+-- ITEM_EFFECT table
+CREATE TABLE ITEM_EFFECT (
+Item_ID INT,
+Catalog_ID INT,
+Effect VARCHAR(100),
+Constant_Inc DECIMAL(10,2),
+Percent_Inc DECIMAL(5,2),
+Duration INT,
+PRIMARY KEY (Item_ID, Catalog_ID, Effect),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+);
+
+-- ITEM_WEAPON_ARMOR_RANGE table
+CREATE TABLE ITEM_WEAPON_ARMOR_RANGE (
+Item_ID INT,
+Catalog_ID INT,
+Range INT,
+Damage INT,
+PRIMARY KEY (Item_ID, Catalog_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+);
+
+-- ITEM_WEAPON_ARMOR_TYPE table
+CREATE TABLE ITEM_WEAPON_ARMOR_TYPE (
+Item_ID INT,
+Catalog_ID INT,
+Type VARCHAR(50),
+PRIMARY KEY (Item_ID, Catalog_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+);
+
+-- CRAFTING_RECIPE table
+CREATE TABLE CRAFTING_RECIPE (
+Item_ID_Output INT,
+Catalog_ID_Output INT,
+Item_ID_Input INT,
+Catalog_ID_Input INT,
+PRIMARY KEY (Item_ID_Output, Catalog_ID_Output, Item_ID_Input, Catalog_ID_Input),
+FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM(Item_ID, Catalog_ID),
+FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM(Item_ID, Catalog_ID)
+);
