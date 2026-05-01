@@ -1,8 +1,9 @@
 CREATE DATABASE gameCatalogs;
 
+-- USER table
 CREATE TABLE USER (
     User_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Profile_Name VARCHAR(50) NOT NULL,
+    Profile_Name VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     F_Name VARCHAR(50),
     M_Init CHAR(1),
@@ -11,12 +12,51 @@ CREATE TABLE USER (
     Creator_Flag BOOLEAN
 );
 
+-- ITEM_CATALOG table
+CREATE TABLE ITEM_CATALOG (
+Catalog_ID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- INVENTORY table
+CREATE TABLE INVENTORY (
+Catalog_ID INT,
+Inventory_ID INT AUTO_INCREMENT,
+Name VARCHAR(100), -- Check uniqeness for this user
+PRIMARY KEY (Catalog_ID, Inventory_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- ITEM table
+CREATE TABLE ITEM (
+Item_ID INT AUTO_INCREMENT,
+Catalog_ID INT,
+Weight DECIMAL(5,2),
+Overall_Quan INT,
+Description TEXT,
+Category VARCHAR(50),
+Rarity VARCHAR(50),
+Name VARCHAR(100), -- Check uniqueness in this catalog
+C_Flag BOOLEAN, --edit
+R_Flag BOOLEAN, --edit
+WA_Flag BOOLEAN, --edit
+UI_Flag BOOLEAN, --edit
+PRIMARY KEY (Item_ID, Catalog_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
 -- USER_EMAIL table
 CREATE TABLE USER_EMAIL (
 User_ID INT,
 Email VARCHAR(100) NOT NULL,
 PRIMARY KEY (User_ID, Email),
 FOREIGN KEY (User_ID) REFERENCES USER(User_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- CREATOR_EDIT_CATALOG table
@@ -28,12 +68,6 @@ FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
 );
 
--- ITEM_CATALOG table
-CREATE TABLE ITEM_CATALOG (
-Catalog_ID INT PRIMARY KEY AUTO_INCREMENT,
-Name VARCHAR(100) NOT NULL
-);
-
 -- USER_EDIT_INVENTORY table
 CREATE TABLE USER_EDIT_INVENTORY (
 User_ID INT,
@@ -41,17 +75,7 @@ Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (User_ID, Catalog_ID, Inventory_ID),
 FOREIGN KEY (User_ID) REFERENCES USER(User_ID),
-FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID),
-FOREIGN KEY (Inventory_ID) REFERENCES INVENTORY(Inventory_ID)
-);
-
--- INVENTORY table
-CREATE TABLE INVENTORY (
-Catalog_ID INT,
-Inventory_ID INT AUTO_INCREMENT,
-Name VARCHAR(100),
-PRIMARY KEY (Catalog_ID, Inventory_ID),
-FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+FOREIGN KEY (Catalog_ID, Inventory_ID) REFERENCES INVENTORY(Catalog_ID, Inventory_ID)
 );
 
 -- WEAPON_ARMOR_EQUIPPED table
@@ -60,9 +84,8 @@ Item_ID INT,
 Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
-FOREIGN KEY (Item_ID) REFERENCES ITEM(Item_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID),
 FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
-FOREIGN KEY (Catalog_ID) REFERENCES INVENTORY(Inventory_ID)
 );
 
 -- CONTAINS_ITEM table
@@ -76,31 +99,13 @@ FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalo
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 );
 
--- ITEM table
-CREATE TABLE ITEM (
-Item_ID INT AUTO_INCREMENT,
-Catalog_ID INT,
-Weight DECIMAL(10,2),
-Overall_Quan INT,
-Description TEXT,
-Category VARCHAR(50),
-Rarity VARCHAR(50),
-Name VARCHAR(100),
-C_Flag BOOLEAN,
-R_Flag BOOLEAN,
-WA_Flag BOOLEAN,
-UI_Flag BOOLEAN,
-PRIMARY KEY (Item_ID, Catalog_ID),
-FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
-);
-
 -- ITEM_EFFECT table
 CREATE TABLE ITEM_EFFECT (
 Item_ID INT,
 Catalog_ID INT,
 Effect VARCHAR(100),
-Constant_Inc DECIMAL(10,2),
-Percent_Inc DECIMAL(5,2),
+Constant_Inc INT,
+Percent_Inc INT,
 Duration INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Effect),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
@@ -112,7 +117,7 @@ Item_ID INT,
 Catalog_ID INT,
 Range INT,
 Damage INT,
-PRIMARY KEY (Item_ID, Catalog_ID),
+PRIMARY KEY (Item_ID, Catalog_ID, Range),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 );
 
@@ -121,7 +126,7 @@ CREATE TABLE ITEM_WEAPON_ARMOR_TYPE (
 Item_ID INT,
 Catalog_ID INT,
 Type VARCHAR(50),
-PRIMARY KEY (Item_ID, Catalog_ID),
+PRIMARY KEY (Item_ID, Catalog_ID, Type),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 );
 
@@ -131,6 +136,7 @@ Item_ID_Output INT,
 Catalog_ID_Output INT,
 Item_ID_Input INT,
 Catalog_ID_Input INT,
+Quantity INT,
 PRIMARY KEY (Item_ID_Output, Catalog_ID_Output, Item_ID_Input, Catalog_ID_Input),
 FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM(Item_ID, Catalog_ID),
 FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM(Item_ID, Catalog_ID)
