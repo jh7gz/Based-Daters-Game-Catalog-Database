@@ -64,8 +64,12 @@ CREATE TABLE CREATOR_EDIT_CATALOG (
 Creator_ID INT,
 Catalog_ID INT,
 PRIMARY KEY (Creator_ID, Catalog_ID),
-FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- USER_EDIT_INVENTORY table
@@ -74,8 +78,12 @@ User_ID INT,
 Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (User_ID, Catalog_ID, Inventory_ID),
-FOREIGN KEY (User_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (User_ID) REFERENCES USER(User_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
 FOREIGN KEY (Catalog_ID, Inventory_ID) REFERENCES INVENTORY(Catalog_ID, Inventory_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- WEAPON_ARMOR_EQUIPPED table
@@ -84,8 +92,12 @@ Item_ID INT,
 Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
-FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID),
-FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- CONTAINS_ITEM table
@@ -95,8 +107,12 @@ Catalog_ID INT,
 Item_ID INT,
 Quantity INT,
 PRIMARY KEY (Inventory_ID, Catalog_ID, Item_ID),
-FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- ITEM_EFFECT table
@@ -109,6 +125,8 @@ Percent_Inc INT,
 Duration INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Effect),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- ITEM_WEAPON_ARMOR_RANGE table
@@ -119,6 +137,8 @@ Range INT,
 Damage INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Range),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- ITEM_WEAPON_ARMOR_TYPE table
@@ -128,6 +148,8 @@ Catalog_ID INT,
 Type VARCHAR(50),
 PRIMARY KEY (Item_ID, Catalog_ID, Type),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 -- CRAFTING_RECIPE table
@@ -138,6 +160,10 @@ Item_ID_Input INT,
 Catalog_ID_Input INT,
 Quantity INT,
 PRIMARY KEY (Item_ID_Output, Catalog_ID_Output, Item_ID_Input, Catalog_ID_Input),
-FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM(Item_ID, Catalog_ID),
+FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
 FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM(Item_ID, Catalog_ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
