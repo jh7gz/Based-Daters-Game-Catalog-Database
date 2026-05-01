@@ -22,7 +22,8 @@ CREATE TABLE CREATOR_EDIT_CATALOG (
 Creator_ID INT,
 Catalog_ID INT,
 PRIMARY KEY (Creator_ID, Catalog_ID),
-FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID)
+FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
 );
 
 -- ITEM_CATALOG table
@@ -38,7 +39,8 @@ Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (User_ID, Catalog_ID, Inventory_ID),
 FOREIGN KEY (User_ID) REFERENCES USER(User_ID),
-FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
+FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID),
+FOREIGN KEY (Inventory_ID) REFERENCES INVENTORY(Inventory_ID)
 );
 
 -- INVENTORY table
@@ -56,8 +58,9 @@ Item_ID INT,
 Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
-FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID),
-FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID)
+FOREIGN KEY (Item_ID) REFERENCES ITEM(Item_ID),
+FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Catalog_ID) REFERENCES INVENTORY(Inventory_ID)
 );
 
 -- CONTAINS_ITEM table
