@@ -4,8 +4,7 @@ db = mysql.connector.connect(
     host = "localhost",
     user = "root",
     password = "root",
-    database = ""
-
+    database = "gameCatalogs"
 )
 
 mycursor = db.cursor()
