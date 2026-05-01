@@ -1,27 +1,27 @@
-CREATE DATABASE gameCatalogs;
+-- CREATE DATABASE gameCatalogs;
 
--- USER table
-CREATE TABLE USER (
-    User_ID INT PRIMARY KEY AUTO_INCREMENT,
+-- USERS table
+CREATE TABLE USERS (
+    User_ID INT PRIMARY KEY,
     Profile_Name VARCHAR(50) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     F_Name VARCHAR(50),
     M_Init CHAR(1),
     L_Name VARCHAR(50),
-    Player_Flag BOOLEAN,
-    Creator_Flag BOOLEAN
+    Player_Flag BIT,
+    Creator_Flag BIT
 );
 
 -- ITEM_CATALOG table
 CREATE TABLE ITEM_CATALOG (
-Catalog_ID INT PRIMARY KEY AUTO_INCREMENT,
+Catalog_ID INT PRIMARY KEY,
 Name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- INVENTORY table
 CREATE TABLE INVENTORY (
 Catalog_ID INT,
-Inventory_ID INT AUTO_INCREMENT,
+Inventory_ID INT,
 Name VARCHAR(100), -- Check uniqeness for this user
 PRIMARY KEY (Catalog_ID, Inventory_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
@@ -31,7 +31,7 @@ FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
 
 -- ITEM table
 CREATE TABLE ITEM (
-Item_ID INT AUTO_INCREMENT,
+Item_ID INT,
 Catalog_ID INT,
 Weight DECIMAL(5,2),
 Overall_Quan INT,
@@ -39,10 +39,10 @@ Description TEXT,
 Category VARCHAR(50),
 Rarity VARCHAR(50),
 Name VARCHAR(100), -- Check uniqueness in this catalog
-C_Flag BOOLEAN, --edit
-R_Flag BOOLEAN, --edit
-WA_Flag BOOLEAN, --edit
-UI_Flag BOOLEAN, --edit
+C_Flag BIT, --edit
+R_Flag BIT, --edit
+WA_Flag BIT, --edit
+UI_Flag BIT, --edit
 PRIMARY KEY (Item_ID, Catalog_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
     ON DELETE CASCADE
@@ -54,7 +54,7 @@ CREATE TABLE USER_EMAIL (
 User_ID INT,
 Email VARCHAR(100) NOT NULL,
 PRIMARY KEY (User_ID, Email),
-FOREIGN KEY (User_ID) REFERENCES USER(User_ID)
+FOREIGN KEY (User_ID) REFERENCES USERS(User_ID)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -64,7 +64,7 @@ CREATE TABLE CREATOR_EDIT_CATALOG (
 Creator_ID INT,
 Catalog_ID INT,
 PRIMARY KEY (Creator_ID, Catalog_ID),
-FOREIGN KEY (Creator_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (Creator_ID) REFERENCES USERS(User_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
 );
 
@@ -74,7 +74,7 @@ User_ID INT,
 Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (User_ID, Catalog_ID, Inventory_ID),
-FOREIGN KEY (User_ID) REFERENCES USER(User_ID),
+FOREIGN KEY (User_ID) REFERENCES USERS(User_ID),
 FOREIGN KEY (Catalog_ID, Inventory_ID) REFERENCES INVENTORY(Catalog_ID, Inventory_ID)
 );
 
@@ -85,7 +85,7 @@ Catalog_ID INT,
 Inventory_ID INT,
 PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID),
-FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Catalog_ID, Inventory_ID) REFERENCES INVENTORY(Catalog_ID, Inventory_ID),
 );
 
 -- CONTAINS_ITEM table
@@ -95,7 +95,7 @@ Catalog_ID INT,
 Item_ID INT,
 Quantity INT,
 PRIMARY KEY (Inventory_ID, Catalog_ID, Item_ID),
-FOREIGN KEY (Inventory_ID, Catalog_ID) REFERENCES INVENTORY(Inventory_ID, Catalog_ID),
+FOREIGN KEY (Catalog_ID, Inventory_ID) REFERENCES INVENTORY(Catalog_ID, Inventory_ID),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 );
 
