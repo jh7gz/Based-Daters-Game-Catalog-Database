@@ -21,9 +21,28 @@ class Authorization(Enum):
 def login():
     found = 0
     while found == 0:
-        id = input("Please enter your Profile Name (enter 0 to quit): ")
+        id = input("Please enter your Profile Name (enter 0 to quit or 1 to create a new account): ")
         if id == '0':
             quit()
+
+        while id == '1':
+            id = input("Please enter your new Profile Name : ")
+            mycursor.execute("SELECT * FROM User WHERE Profile_Name = (%s)", (id,))
+            for x in mycursor:
+                found += 1
+            if found == 0:
+                psswrd = input("That Profile Name is available. Please enter a password.")
+                first = input("Please enter your first name")
+                last = input("Please enter your last name")
+                middle = input("Please enter your middle initial")
+                mycursor.execute("INSERT INTO User(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
+                db.commit()
+                print("New account created, proceeding to login")
+            if found != 0:
+                print("That Profile Name is in use, please try again")
+                id = '1'
+
+
         mycursor.execute("SELECT * FROM User WHERE Profile_Name = (%s)", (id,))
         for x in mycursor:
             found += 1
@@ -40,3 +59,5 @@ def login():
             correct += 1
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
+
+
