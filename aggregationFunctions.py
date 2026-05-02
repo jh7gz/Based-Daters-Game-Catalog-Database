@@ -3,11 +3,13 @@ import mysql.connector
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "root",
-    database = "gameCatalogs"
+    password = "root"
 )
 
 mycursor = db.cursor()
+
+def finishSetup():
+    mycursor.execute("USE gameCatalogs")
 
 def getNumInventories(playerID):
 

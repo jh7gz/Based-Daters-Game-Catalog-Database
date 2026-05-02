@@ -1,6 +1,6 @@
-#import functionalRequirements as fr
-#import aggregationFunctions as af
-#import sampleInput as si
+import functionalRequirements as fr
+import aggregationFunctions as af
+import sampleInput as si
 import mysql.connector
 import re
 
@@ -20,7 +20,6 @@ def createNoCommentSetup():
 
     with open("setupNoComments.sql","w",encoding="utf-8") as f:
         f.write(cleaned)
-    pass #TODO
 
 def Initial_setup():
     createNoCommentSetup()
@@ -50,7 +49,6 @@ def Initial_setup():
     af.finishSetup()
     si.finishSetup()
     print("Setup complete.\n")
-    db.commit()
 
 def menu():
     id = fr.login() # Add the ability to sign up (new user)
