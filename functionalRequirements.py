@@ -12,6 +12,7 @@ mycursor = db.cursor()
 
 
 def login():
+    userid = 0
     found = 0
     while found == 0:
         id = input("Please enter your Profile Name (enter 0 to quit or 1 to create a new account): ")
@@ -21,6 +22,7 @@ def login():
         while id == '1':
             id = input("Please enter your new Profile Name : ")
             mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (id,))
+            userid = mycursor.execute("SELECT User_ID FROM USERS WHERE Profile_Name = (%s)", (id,))
             for x in mycursor:
                 found += 1
             if found == 0:
@@ -44,6 +46,8 @@ def login():
             found += 1
         if found == 0:
             print("That Profile Name does not exist. Please enter a valid profile name.")
+
+        return userid
     
     correct = 0
     while correct == 0:
@@ -56,44 +60,46 @@ def login():
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
 
-def createCatalog():
-    creator = mycursor.execute("SELECT Creator_Flag FROM USERS WHERE user_id = id" )
-    if creator == True:
-        found = 0
-        while found == 0:
-            name = input("What would you like the name of the Item Catalog to be?")
-            mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name,))
-            for x in mycursor:
-                found += 1
-            if found != 0:
-                print("That item catlog already exists. Please enter a valid new catalog name.")
-        
-        try:
-            mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
-            db.commit()
-        except mysql.connector.IntegrityError as err:
-            print("Error: {}".format(err))
-        print("New catalog created successfully.")
+def createCatalog(id: int):
+    found = 0
+    while found == 0:
+        name = input("What would you like the name of the Item Catalog to be?")
+        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name,))
+        for x in mycursor:
+            found += 1
+        if found != 0:
+            print("That item catlog already exists. Please enter a valid new catalog name.")
+       
+    try:
+        mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
+        db.commit()
+    except mysql.connector.IntegrityError as err:
+        print("Error: {}".format(err))
+    print("New catalog created successfully.")
 
-    def createInventory():
-        found = 0
-        while found == 0:
-            catalog = input("Which item catalog would you like to create an inventory for.")
-            mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-            for x in mycursor:
-                found += 1
-            if found == 0:
-                print("That item catlog does not exist. Please enter a valid catalog.")
-        
-        name = input("What would you like the name of your inventory to be?")
-        try:
-            mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
-            db.commit()
-        except mysql.connector.IntegrityError as err:
-            print("Error: {}".format(err))
-        print("New inventory created successfully.")
+    mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = (%s)", (id,))
 
-def createItem():
+def createInventory(id: int):
+    found = 0
+    while found == 0:
+        catalog = input("Which item catalog would you like to create an inventory for.")
+        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        for x in mycursor:
+            found += 1
+        if found == 0:
+            print("That item catlog does not exist. Please enter a valid catalog.")
+        
+    name = input("What would you like the name of your inventory to be?")
+    try:
+        mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
+        db.commit()
+    except mysql.connector.IntegrityError as err:
+        print("Error: {}".format(err))
+    print("New inventory created successfully.")
+
+    mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (id,))
+
+def createItem(id: int):
     found = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an item for.")
@@ -102,6 +108,8 @@ def createItem():
             found += 1
         if found == 0:
             print("That item catlog does not exist. Please enter a valid catalog.")
+        if found != 0:
+            mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
     
     found = 0
     while found == 0:
@@ -151,4 +159,48 @@ def createItem():
     print("New item created successfully.")
 
 
- 
+def modifyItem(id: int):
+    pass
+
+def giveInventoryAccess(id: int):
+    pass
+
+def giveCatalogAccess(id: int):
+    pass
+
+def equipItem(id: int):
+    pass
+
+def searchCatalog(id: int):
+    pass
+
+def searchInventory(id: int):
+    pass
+
+def searchSystem(id: int):
+    pass
+
+def sortCatalog(id: int):
+    pass
+
+def sortInventory(id: int):
+    pass
+
+def deleteCatalog(id: int):
+    pass
+
+def deleteInventory(id: int):
+    pass
+
+def deleteItem(id: int):
+    pass
+
+def checkQuantity(id: int):
+    pass
+
+def updateInventory(id: int):
+    pass
+
+def craftItem(id: int):
+    pass
+

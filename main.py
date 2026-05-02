@@ -34,10 +34,10 @@ def Initial_setup():
     print("Setup complete.\n")
 
 def menu():
-    fr.login() # Add the ability to sign up (new user)
+    id = fr.login() # Add the ability to sign up (new user)
     action =1
     while action != 0:
-        print("----------------Welcome to the Game Catalog Database-----------------")
+        print("----------------Welcome to the Game Catalog Database----------------")
         print("Choose your actions:")
         print("1. Create tuple\t\t\t2. Update tuple")
         #1 will include creating catalog, inventory, and item
@@ -72,11 +72,11 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.createCatalog()
+                        fr.createCatalog(id)
                     case 2:
-                        fr.createInventory()
+                        fr.createInventory(id)
                     case 3:
-                        fr.createItem()
+                        fr.createItem(id)
                     case 0:
                         menu()
                         break
@@ -94,9 +94,9 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.giveCatalogAccess()
+                        fr.giveCatalogAccess(id)
                     case 2:
-                        fr.giveInventoryAccess()
+                        fr.giveInventoryAccess(id)
                     case 0:
                         menu()
                         break
@@ -115,11 +115,11 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.deleteCatalog()
+                        fr.deleteCatalog(id)
                     case 2:
-                        fr.deleteInventory()
+                        fr.deleteInventory(id)
                     case 3:
-                        fr.deleteItem()
+                        fr.deleteItem(id)
                     case 0:
                         menu()
                         break
@@ -138,11 +138,11 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.searchCatalog()
+                        fr.searchCatalog(id)
                     case 2:
-                        fr.searchInventory()
+                        fr.searchInventory(id)
                     case 3:
-                        fr.searchSystem()
+                        fr.searchSystem(id)
                     case 0:
                         menu()
                         break
@@ -160,9 +160,9 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.sortCatalog()
+                        fr.sortCatalog(id)
                     case 2:
-                        fr.sortInventory()
+                        fr.sortInventory(id)
                     case 0:
                         menu()
                         break
@@ -180,9 +180,9 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.checkQuantity()
+                        fr.checkQuantity(id)
                     case 2:
-                        fr.modifyItem()
+                        fr.modifyItem(id)
                     case 0:
                         menu()
                         break
@@ -201,11 +201,11 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.equipItem()
+                        fr.equipItem(id)
                     case 2:
-                        fr.updateInventory()
+                        fr.updateInventory(id)
                     case 3:
-                        fr.craftItem()
+                        fr.craftItem(id)
                     case 0:
                         menu()
                         break
@@ -223,9 +223,9 @@ def menu():
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.giveCatalogAccess()
+                        fr.giveCatalogAccess(id)
                     case 2:
-                        fr.giveInventoryAccess()
+                        fr.giveInventoryAccess(id)
                     case 0:
                         menu()
                         break
