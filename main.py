@@ -34,31 +34,34 @@ def Initial_setup():
     print("Setup complete.\n")
 
 def menu():
-    fr.login()
+    fr.login() # Add the ability to sign up (new user)
     action =1
     while action != 0:
         print("----------------Welcome to the Game Catalog Database-----------------")
         print("Choose your actions:")
-        print("1. Create tuple\t\t\t2. Add access")
+        print("1. Create tuple\t\t\t2. Update tuple")
         #1 will include creating catalog, inventory, and item
-        #2 will include adding access to inventories or catalogs
-        print("3. Search tuples\t\t\t4. Delete tuples")
-        #3 will include searching catalogs and inventories
-        #4 will include deleting items, catalogs, and inventories
-        print("5. Update inventory\t\t\t6.Creator Actions")
-        #5 will include equipping items, add or remove items from inventory, craft an item
-        #6 will include changing quantity of items and modifying items
-        print("7. Sort tuples\t\t\t0. Quit")
-        #7 will include sorting catalogs and inventories
+        #2 will include updating existing tuples
+        print("3. Delete tuple\t\t\t4. Search tuple")
+        #3 will include deleting items, catalogs, and inventories or this account
+        #4 will include searching catalogs and inventories and items
+        print("5. Sort tuples\t\t\t6.View tuples")
+        #5 will include sorting catalogs and inventories
+        #6 will include viewing all tuples in the a catalog, inventory, or such
+        print("7. Update inventory\t\t\t8. Add access")
+        #7 will include equipping items, add or remove items from inventory, craft an item
+        #8 will include adding access to inventories or catalogs
+        print("0. Quit")
         action = int(input(""))
-        while action < 0 or action > 7:
+        while action < 0 or action > 8:
             print("Invalid action, please choose from the menu.")
             confirm = input("press enter")
             action = menu()
         match action:
+            # Create tuple
             case 1:
-                choice = 1
-                while choice > 0 or choice < 4:
+                choice = -1
+                while choice < 0 or choice > 3:
                     print("What would you like to create?")
                     print("1. Catalog")
                     print("2. Inventory")
@@ -67,22 +70,21 @@ def menu():
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            fr.createCatalog()
-                            menu()
-                        case 2:
-                            fr.createInventory()
-                            menu()
-                        case 3:
-                            fr.createItem()
-                            menu()
-                        case 0:
-                            quit()
+                match choice:
+                    case 1:
+                        fr.createCatalog()
+                    case 2:
+                        fr.createInventory()
+                    case 3:
+                        fr.createItem()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Update tuple
             case 2:
-                choice = 1
-                while choice > 0 or choice < 3:
+                choice = -1
+                while choice < 0 or choice > 2:
                     print("Would you like to add access to a catalog or an inventory?")
                     print("1. Catalog")
                     print("2. Inventory")
@@ -90,43 +92,19 @@ def menu():
                     choice = int (input(""))
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.giveCatalogAccess()
-                            menu()
-                        case 2:
-                            #fr.giveInventoryAccess()
-                            menu()
-                        case 0:
-                            quit()
+                match choice:
+                    case 1:
+                        fr.giveCatalogAccess()
+                    case 2:
+                        fr.giveInventoryAccess()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Delete tuple
             case 3:
-                choice = 1
-                while choice > 0 or choice < 4:
-                    print("What would you like to search for?")
-                    print("1. Item in a Catalog")
-                    print("2. Item in an Inventory")
-                    print("3. Name of a Catalog or Inventory")
-                    print("0. Quit")
-                    choice = int (input(""))
-                    if choice < 0 or choice > 3:
-                        print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.searchCatalog()
-                            menu()
-                        case 2:
-                            #fr.searchInventory()
-                            menu()
-                        case 3:
-                            #fr.searchSystem()
-                            menu()
-                        case 0:
-                            quit()
-            case 4:
-                choice = 1
-                while choice > 0 or choice < 4:
+                choice = -1
+                while choice < 0 or choice > 3:
                     print("What would you like to delete?")
                     print("1. Catalog")
                     print("2. Inventory")
@@ -135,22 +113,84 @@ def menu():
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.deleteCatalog()
-                            menu()
-                        case 2:
-                            #fr.deleteInventory()
-                            menu()
-                        case 3:
-                            #fr.deleteItem()
-                            menu()
-                        case 0:
-                            quit()
+                match choice:
+                    case 1:
+                        fr.deleteCatalog()
+                    case 2:
+                        fr.deleteInventory()
+                    case 3:
+                        fr.deleteItem()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Search Tuple
+            case 4:
+                choice = -1
+                while choice < 0 or choice > 3:
+                    print("What would you like to search for?")
+                    print("1. Item in a Catalog")
+                    print("2. Item in an Inventory")
+                    print("3. Name of a Catalog or Inventory")
+                    print("0. Quit")
+                    choice = int (input(""))
+                    if choice < 0 or choice > 3:
+                        print("Invalid choice, please try again")
+                match choice:
+                    case 1:
+                        fr.searchCatalog()
+                    case 2:
+                        fr.searchInventory()
+                    case 3:
+                        fr.searchSystem()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Sort tuples
             case 5:
-                choice = 1
-                while choice > 0 or choice < 4:
+                choice = -1
+                while choice < 0 or choice > 2:
+                    print("What would you like to sort?")
+                    print("1. Catalog")
+                    print("2. Inventory")
+                    print("0. Quit")
+                    choice = int (input(""))
+                    if choice < 0 or choice > 2:
+                        print("Invalid choice, please try again")
+                match choice:
+                    case 1:
+                        fr.sortCatalog()
+                    case 2:
+                        fr.sortInventory()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # View tuples
+            case 6:
+                choice = -1
+                while choice < 0 or choice > 2:
+                    print("What creator action would you like to take?")
+                    print("1. Check/Update Quantity")
+                    print("2. Modify Item")
+                    print("0. Quit")
+                    choice = int (input(""))
+                    if choice < 0 or choice > 2:
+                        print("Invalid choice, please try again")
+                match choice:
+                    case 1:
+                        fr.checkQuantity()
+                    case 2:
+                        fr.modifyItem()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Update inventory
+            case 7:
+                choice = -1
+                while choice < 0 or choice > 3:
                     print("How would you like to update your inventory?")
                     print("1. Equip an Item")
                     print("2. Add or Remove an Item")
@@ -159,64 +199,40 @@ def menu():
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.equipItem()
-                            menu()
-                        case 2:
-                            #fr.updateInventory()
-                            menu()
-                        case 3:
-                            #fr.craftItem()
-                            menu()
-                        case 0:
-                            quit()
-            case 6:
-                choice = 1
-                while choice > 0 or choice < 3:
-                    print("What creator action would you like to take?")
-                    print("1. Check/Update Quantity")
-                    print("2. Modify Item")
-                    print("0. Quit")
-                    choice = int (input(""))
-                    if choice < 0 or choice > 2:
-                        print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.checkQuantity()
-                            menu()
-                        case 2:
-                            #fr.modifyItem()
-                            menu()
-                        case 0:
-                            quit()
-            case 7:
-                choice = 1
-                while choice > 0 or choice < 3:
-                    print("What would you like to sort?")
+                match choice:
+                    case 1:
+                        fr.equipItem()
+                    case 2:
+                        fr.updateInventory()
+                    case 3:
+                        fr.craftItem()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Add access
+            case 8:
+                choice = -1
+                while choice < 0 or choice > 2:
+                    print("Would you like to add access to a catalog or an inventory?")
                     print("1. Catalog")
                     print("2. Inventory")
                     print("0. Quit")
                     choice = int (input(""))
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
-                        choice = int(input(""))
-                    match choice:
-                        case 1:
-                            #fr.sortCatalog()
-                            menu()
-                        case 2:
-                            #fr.sortInventory()
-                            menu()
-                        case 0:
-                            quit()
+                match choice:
+                    case 1:
+                        fr.giveCatalogAccess()
+                    case 2:
+                        fr.giveInventoryAccess()
+                    case 0:
+                        menu()
+                        break
+                menu()
+            # Quit    
             case 0:
                 quit()
-                        
-
-    pass
 
 def main():
     Initial_setup()
