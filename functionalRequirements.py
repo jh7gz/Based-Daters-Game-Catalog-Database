@@ -57,6 +57,7 @@ def login():
             print("That password is not correct. Please enter the correct password.")
 
 def createCatalog():
+    id = int(input("What is your creator id"))
     creator = mycursor.execute("SELECT Creator_Flag FROM USERS WHERE user_id = id" )
     if creator == True:
         found = 0
@@ -151,4 +152,48 @@ def createItem():
     print("New item created successfully.")
 
 
- 
+def modifyItem():
+    pass
+
+def giveInventoryAccess():
+    pass
+
+def giveCatalogAccess():
+    pass
+
+def equipItem():
+    pass
+
+def searchCatalog():
+    pass
+
+def searchInventory():
+    pass
+
+def searchSystem():
+    pass
+
+def sortCatalog():
+    pass
+
+def sortInventory():
+    pass
+
+def deleteCatalog():
+    pass
+
+def deleteInventory():
+    pass
+
+def deleteItem():
+    pass
+
+def checkQuantity():
+    pass
+
+def updateInventory():
+    pass
+
+def craftItem():
+    pass
+

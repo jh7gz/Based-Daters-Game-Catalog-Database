@@ -37,7 +37,7 @@ def menu():
     fr.login()
     action =1
     while action != 0:
-        print("----------------Welcome to the Game Catalog Database-----------------")
+        print("----------------Welcome to the Game Catalog Database----------------")
         print("Choose your actions:")
         print("1. Create tuple\t\t\t2. Add access")
         #1 will include creating catalog, inventory, and item
@@ -93,10 +93,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.giveCatalogAccess()
+                            fr.giveCatalogAccess()
                             menu()
                         case 2:
-                            #fr.giveInventoryAccess()
+                            fr.giveInventoryAccess()
                             menu()
                         case 0:
                             quit()
@@ -114,13 +114,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.searchCatalog()
+                            fr.searchCatalog()
                             menu()
                         case 2:
-                            #fr.searchInventory()
+                            fr.searchInventory()
                             menu()
                         case 3:
-                            #fr.searchSystem()
+                            fr.searchSystem()
                             menu()
                         case 0:
                             quit()
@@ -138,13 +138,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.deleteCatalog()
+                            fr.deleteCatalog()
                             menu()
                         case 2:
-                            #fr.deleteInventory()
+                            fr.deleteInventory()
                             menu()
                         case 3:
-                            #fr.deleteItem()
+                            fr.deleteItem()
                             menu()
                         case 0:
                             quit()
@@ -162,13 +162,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.equipItem()
+                            fr.equipItem()
                             menu()
                         case 2:
-                            #fr.updateInventory()
+                            fr.updateInventory()
                             menu()
                         case 3:
-                            #fr.craftItem()
+                            fr.craftItem()
                             menu()
                         case 0:
                             quit()
@@ -185,10 +185,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.checkQuantity()
+                            fr.checkQuantity()
                             menu()
                         case 2:
-                            #fr.modifyItem()
+                            fr.modifyItem()
                             menu()
                         case 0:
                             quit()
@@ -205,10 +205,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            #fr.sortCatalog()
+                            fr.sortCatalog()
                             menu()
                         case 2:
-                            #fr.sortInventory()
+                            fr.sortInventory()
                             menu()
                         case 0:
                             quit()
