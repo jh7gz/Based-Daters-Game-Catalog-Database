@@ -84,19 +84,22 @@ def menu():
             # Update tuple
             case 2:
                 choice = -1
-                while choice < 0 or choice > 2:
-                    print("Would you like to add access to a catalog or an inventory?")
+                while choice < 0 or choice > 3:
+                    print("What would you like to update?")
                     print("1. Catalog")
                     print("2. Inventory")
+                    print("3. Item")
                     print("0. Quit")
                     choice = int (input(""))
-                    if choice < 0 or choice > 2:
+                    if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.giveCatalogAccess(id)
+                        fr.updateCatalog(id)
                     case 2:
-                        fr.giveInventoryAccess(id)
+                        fr.updateInventory(id)
+                    case 3:
+                        fr.updateItem(id)
                     case 0:
                         menu()
                         break
@@ -170,19 +173,22 @@ def menu():
             # View tuples
             case 6:
                 choice = -1
-                while choice < 0 or choice > 2:
-                    print("What creator action would you like to take?")
-                    print("1. Check/Update Quantity")
-                    print("2. Modify Item")
+                while choice < 0 or choice > 3:
+                    print("What would you like to view?")
+                    print("1. Catalog")
+                    print("2. Inventory")
+                    print("3. Item")
                     print("0. Quit")
                     choice = int (input(""))
-                    if choice < 0 or choice > 2:
+                    if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.checkQuantity(id)
+                        fr.viewCatalog(id)
                     case 2:
-                        fr.modifyItem(id)
+                        fr.viewInventory(id)
+                    case 3:
+                        fr.viewItem(id)
                     case 0:
                         menu()
                         break
