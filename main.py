@@ -116,7 +116,7 @@ def menu():
                     case 2:
                         fr.updateInventory(id)
                     case 3:
-                        fr.updateItem(id)
+                        fr.modifyItem(id)
                     case 0:
                         menu()
                         break
