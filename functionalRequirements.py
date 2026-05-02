@@ -432,6 +432,23 @@ def searchInventory(id: int):
     pass
 
 def searchSystem(id: int):
+    found = 0
+    while found == 0:
+        name = print("What is the name of the inventory or catalog you would like to search for?")
+        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (name,))
+        for x in mycursor:
+            invenInfo = mycursor.fetchall()
+            catID,invenID,invenName = invenInfo
+            print(f"Catalog ID: {catID}, Inventory ID: {invenID}, Name: {invenName}")
+            found += 1
+        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (name,))
+        for x in mycursor:
+            catInfo = mycursor.fetchall()
+            userID,catalogID,catName = catInfo
+            print(f"User ID: {userID}, Catalog ID: {catalogID}, Name: {catName}")
+            found += 1
+        if found == 0:
+            print("Name of Inventory or Catalog not found, please input a valid Inventory or Catalog name")
     pass
 
 def sortCatalog(id: int):
