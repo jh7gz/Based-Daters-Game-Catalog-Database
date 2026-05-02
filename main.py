@@ -10,7 +10,11 @@ conn = mysql.connector.connect(
 
 cursor = conn.cursor()
 
+def createNoCommentSetup():
+    pass #TODO
+
 def Initial_setup():
+    createNoCommentSetup()
     print("Initializing setup...")
     cursor.execute("""
         SELECT SCHEMA_NAME 
