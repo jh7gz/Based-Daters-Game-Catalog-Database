@@ -1,14 +1,17 @@
-import functionalRequirements as fr
-import aggregationFunctions as af
+#import functionalRequirements as fr
+#import aggregationFunctions as af
+
+def Initial_setup():
+    # Check if database "gameCatalogs" exists on this localhost
+    # If not, run setup.sql file
+    pass
 
 def menu():
-    # TODO
     pass
 
 def main():
-    fr.setup_database_if_needed()
-    af.connectDB()
+    Initial_setup()
     menu()
-    
+
 if __name__ == "__main__":
     main()
