@@ -1,13 +1,19 @@
 import mysql.connector
 
-db = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "root",
-    database = "gameCatalogs"
-)
+db = None
+mycursor = None
 
-mycursor = db.cursor()
+def connectDB():
+    global db, mycursor
+
+    db = mysql.connector.connect(
+        host="localhost",
+        user="SA",
+        password="Database2026",
+        database="gameCatalogs"
+    )
+
+    mycursor = db.cursor()
 
 def getNumInventories(playerID):
 

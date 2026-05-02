@@ -1,27 +1,3 @@
- /*IF NOT EXISTS (
-    SELECT name 
-    FROM sys.databases 
-    WHERE name = 'gameCatalogs'
-)
-BEGIN
-
-CREATE DATABASE gameCatalogs;*/
-
--- Delete already made tables   ***************** FIX LATER
-DROP TABLE IF EXISTS CRAFTING_RECIPE;
-DROP TABLE IF EXISTS WEAPON_ARMOR_EQUIPPED;
-DROP TABLE IF EXISTS CONTAINS_ITEM;
-DROP TABLE IF EXISTS ITEM_EFFECT;
-DROP TABLE IF EXISTS ITEM_WEAPON_ARMOR_RANGE;
-DROP TABLE IF EXISTS ITEM_WEAPON_ARMOR_TYPE;
-DROP TABLE IF EXISTS USER_EDIT_INVENTORY;
-DROP TABLE IF EXISTS CREATOR_EDIT_CATALOG;
-DROP TABLE IF EXISTS USER_EMAIL;
-DROP TABLE IF EXISTS ITEM;
-DROP TABLE IF EXISTS INVENTORY;
-DROP TABLE IF EXISTS ITEM_CATALOG;
-DROP TABLE IF EXISTS USERS;
-
 -- USERS table
 CREATE TABLE USERS (
     User_ID INT PRIMARY KEY,
@@ -44,7 +20,8 @@ Name VARCHAR(100) NOT NULL UNIQUE
 CREATE TABLE INVENTORY (
 Catalog_ID INT,
 Inventory_ID INT,
-Name VARCHAR(100), -- Check uniqeness for this user
+-- Check uniqeness for this user
+Name VARCHAR(100),
 PRIMARY KEY (Catalog_ID, Inventory_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
     ON DELETE CASCADE
@@ -60,11 +37,13 @@ Overall_Quan INT,
 Description TEXT,
 Category VARCHAR(50),
 Rarity VARCHAR(50),
-Name VARCHAR(100), -- Check uniqueness in this catalog
-C_Flag BIT, --edit
-R_Flag BIT, --edit
-WA_Flag BIT, --edit
-UI_Flag BIT, --edit
+-- Check uniqueness in this catalog
+Name VARCHAR(100),
+--edit these
+C_Flag BIT,
+R_Flag BIT,
+WA_Flag BIT,
+UI_Flag BIT,
 PRIMARY KEY (Item_ID, Catalog_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
     ON DELETE CASCADE
@@ -185,7 +164,3 @@ FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM (Item_ID, Catalog_
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
-
---END;
-
-USE gameCatalogs;

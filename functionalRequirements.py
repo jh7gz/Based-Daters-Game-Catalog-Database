@@ -1,22 +1,50 @@
 import mysql.connector
-from enum import Enum
 
-db = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "root",
-    database = "gameCatalogs"
-)
+db = None
+mycursor = None
 
-mycursor = db.cursor()
+def setup_database_if_needed():
+    print("Initializing database if needed...")
 
-authorization_list = ('Player', 'User', 'Creator')
+    db = mysql.connector.connect(
+        host="localhost",
+        user="SA",
+        password="Database2026",
+    )
 
-class Authorization(Enum):
-    PLAYER = "Player",
-    USER = "User",
-    CREATOR = "Creator"
+    mycursor = db.cursor()
 
+    # 1. Create DB FIRST
+    mycursor.execute("SHOW DATABASES LIKE 'gameCatalogs'")
+    exists = mycursor.fetchone()
+    if not exists:
+        print("Creating database...")
+        mycursor.execute("CREATE DATABASE gameCatalogs")
+
+    # 2. Switch into DB immediately
+    mycursor.execute("USE gameCatalogs")
+
+    # 3. NOW run schema
+    mycursor.execute("SHOW TABLES LIKE 'USERS'")
+    exists = mycursor.fetchone()
+
+    if not exists:
+        print("Schema not found. Creating tables...")
+        with open("setup.sql", "r") as setup:
+            sql_script = setup.read()
+            statements = sql_script.split(";")
+
+            for statement in statements:
+                statement = statement.strip()
+                if statement:
+                    mycursor.execute(statement)
+
+        db.commit()
+
+    else:
+        print("Schema already exists. Skipping setup.")
+
+    print("Database initialized.")
 
 def login():
     found = 0
@@ -74,7 +102,7 @@ def createCatalog():
             print("That item catlog already exists. Please enter a valid new catalog name.")
     
     try:
-        mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
+        mycursor.execute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
         db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
