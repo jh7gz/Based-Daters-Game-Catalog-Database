@@ -260,7 +260,7 @@ def modifyItem(id: int):
 def giveInventoryAccess(id: int):
     found = 0
     invenID = 0
-    inventory
+    inventory = 0
     while found == 0:
         inventory = input("Which inventory would you like to give another user access to.")
         mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
@@ -392,7 +392,42 @@ def equipItem(id: int):
 def searchCatalog(id: int):
     pass
 
+
 def searchInventory(id: int):
+    found = 0
+    invenID = 0
+    inventory = 0
+    while found == 0:
+        inventory = input("Which inventory would you like to search.")
+        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
+        for x in mycursor:
+            found += 1
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
+        if found != 0:
+            newFound = 0
+            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (Creator_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
+            for x in mycursor:
+                newFound += 1
+            if newFound == 0:
+                print("You do not have edit access for that inventory")
+                found = 0
+        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+
+    item = input("What is the item you are searching for?")
+    mycursor.execute("SELECT * FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
+    for x in mycursor:
+        found += 1
+    if found == 0:
+        print("The item was not found in this inventory.")
+    else:
+        mycursor.execute("SELECT * FROM ITEM WHERE Name = (%s)", (item,))
+        itemInfo = mycursor.fetchall()
+        itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
+        print(f"ID: {itemID}, Catalog ID: {itemCatID}, Name: {itemName},Weight: {itemWeight}, Quantity: {itemNum}, Category: {itemCat}")
+        print(f"Rarity: {itemRare}, Is Consumable: {itemConsumable}, Is Resource: {itemResource}, Is Weapon or Armor: {itemWA}, Is Upgradable: {itemUpgrade}")
+        print(f"Description: {itemDesc}")
+
     pass
 
 def searchSystem(id: int):

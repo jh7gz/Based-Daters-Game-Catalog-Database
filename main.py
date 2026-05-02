@@ -1,6 +1,7 @@
 import functionalRequirements as fr
 #import aggregationFunctions as af
 import mysql.connector
+import re
 
 conn = mysql.connector.connect(
     host="localhost",
@@ -11,6 +12,13 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 def createNoCommentSetup():
+    with open("setup.sql","r",encoding="utf-8") as f:
+        sql = f.read()
+
+    cleaned = re.sub(r"--.*?$","",sql,flags=re.MULTILINE)
+
+    with open("setupNoComments.sql","w",encoding="utf-8") as f:
+        f.write(cleaned)
     pass #TODO
 
 def Initial_setup():
