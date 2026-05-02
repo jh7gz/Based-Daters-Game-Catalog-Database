@@ -34,7 +34,7 @@ def Initial_setup():
     print("Setup complete.\n")
 
 def menu():
-    fr.login()
+    id = fr.login()
     action =1
     while action != 0:
         print("----------------Welcome to the Game Catalog Database----------------")
@@ -70,13 +70,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.createCatalog()
+                            fr.createCatalog(id)
                             menu()
                         case 2:
-                            fr.createInventory()
+                            fr.createInventory(id)
                             menu()
                         case 3:
-                            fr.createItem()
+                            fr.createItem(id)
                             menu()
                         case 0:
                             quit()
@@ -93,10 +93,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.giveCatalogAccess()
+                            fr.giveCatalogAccess(id)
                             menu()
                         case 2:
-                            fr.giveInventoryAccess()
+                            fr.giveInventoryAccess(id)
                             menu()
                         case 0:
                             quit()
@@ -114,13 +114,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.searchCatalog()
+                            fr.searchCatalog(id)
                             menu()
                         case 2:
-                            fr.searchInventory()
+                            fr.searchInventory(id)
                             menu()
                         case 3:
-                            fr.searchSystem()
+                            fr.searchSystem(id)
                             menu()
                         case 0:
                             quit()
@@ -138,13 +138,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.deleteCatalog()
+                            fr.deleteCatalog(id)
                             menu()
                         case 2:
-                            fr.deleteInventory()
+                            fr.deleteInventory(id)
                             menu()
                         case 3:
-                            fr.deleteItem()
+                            fr.deleteItem(id)
                             menu()
                         case 0:
                             quit()
@@ -162,13 +162,13 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.equipItem()
+                            fr.equipItem(id)
                             menu()
                         case 2:
-                            fr.updateInventory()
+                            fr.updateInventory(id)
                             menu()
                         case 3:
-                            fr.craftItem()
+                            fr.craftItem(id)
                             menu()
                         case 0:
                             quit()
@@ -185,10 +185,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.checkQuantity()
+                            fr.checkQuantity(id)
                             menu()
                         case 2:
-                            fr.modifyItem()
+                            fr.modifyItem(id)
                             menu()
                         case 0:
                             quit()
@@ -205,10 +205,10 @@ def menu():
                         choice = int(input(""))
                     match choice:
                         case 1:
-                            fr.sortCatalog()
+                            fr.sortCatalog(id)
                             menu()
                         case 2:
-                            fr.sortInventory()
+                            fr.sortInventory(id)
                             menu()
                         case 0:
                             quit()
