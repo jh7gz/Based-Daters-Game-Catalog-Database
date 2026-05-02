@@ -10,13 +10,6 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 
-authorization_list = ('Player', 'User', 'Creator')
-
-class Authorization(Enum):
-    PLAYER = "Player",
-    USER = "User",
-    CREATOR = "Creator"
-
 
 def login():
     found = 0
@@ -27,7 +20,7 @@ def login():
 
         while id == '1':
             id = input("Please enter your new Profile Name : ")
-            mycursor.execute("SELECT * FROM User WHERE Profile_Name = (%s)", (id,))
+            mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (id,))
             for x in mycursor:
                 found += 1
             if found == 0:
@@ -36,7 +29,7 @@ def login():
                 last = input("Please enter your last name")
                 middle = input("Please enter your middle initial")
                 try:
-                    mycursor.execute("INSERT INTO User(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
+                    mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
                     db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
@@ -46,7 +39,7 @@ def login():
                 id = '1'
 
 
-        mycursor.execute("SELECT * FROM User WHERE Profile_Name = (%s)", (id,))
+        mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (id,))
         for x in mycursor:
             found += 1
         if found == 0:
@@ -57,52 +50,54 @@ def login():
         pswd = input("Please enter your password (enter 0 to quit): ")
         if pswd == '0':
             quit()
-        mycursor.execute("SELECT * FROM User WHERE Profile_Name = (%s) AND Password = (%s)", (id, pswd))
+        mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s) AND Password = (%s)", (id, pswd))
         for x in mycursor:
             correct += 1
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
 
 def createCatalog():
-    found = 0
-    while found == 0:
-        name = input("What would you like the name of the Item Catalog to be?")
-        mycursor.execute("SELECT * FROM Catalog WHERE Name = (%s)", (name,))
-        for x in mycursor:
-            found += 1
-        if found != 0:
-            print("That item catlog already exists. Please enter a valid new catalog name.")
-    
-    try:
-        mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
-        db.commit()
-    except mysql.connector.IntegrityError as err:
-        print("Error: {}".format(err))
-    print("New catalog created successfully.")
+    creator = mycursor.execute("SELECT Creator_Flag FROM USERS WHERE user_id = id" )
+    if creator == True:
+        found = 0
+        while found == 0:
+            name = input("What would you like the name of the Item Catalog to be?")
+            mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name,))
+            for x in mycursor:
+                found += 1
+            if found != 0:
+                print("That item catlog already exists. Please enter a valid new catalog name.")
+        
+        try:
+            mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
+            db.commit()
+        except mysql.connector.IntegrityError as err:
+            print("Error: {}".format(err))
+        print("New catalog created successfully.")
 
-def createInventory():
-    found = 0
-    while found == 0:
-        catalog = input("Which item catalog would you like to create an inventory for.")
-        mycursor.execute("SELECT * FROM Catalog WHERE Name = (%s)", (catalog,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That item catlog does not exist. Please enter a valid catalog.")
-    
-    name = input("What would you like the name of your inventory to be?")
-    try:
-        mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
-        db.commit()
-    except mysql.connector.IntegrityError as err:
-        print("Error: {}".format(err))
-    print("New inventory created successfully.")
+    def createInventory():
+        found = 0
+        while found == 0:
+            catalog = input("Which item catalog would you like to create an inventory for.")
+            mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+            for x in mycursor:
+                found += 1
+            if found == 0:
+                print("That item catlog does not exist. Please enter a valid catalog.")
+        
+        name = input("What would you like the name of your inventory to be?")
+        try:
+            mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
+            db.commit()
+        except mysql.connector.IntegrityError as err:
+            print("Error: {}".format(err))
+        print("New inventory created successfully.")
 
 def createItem():
     found = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an item for.")
-        mycursor.execute("SELECT * FROM Catalog WHERE Name = (%s)", (catalog,))
+        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
         for x in mycursor:
             found += 1
         if found == 0:
@@ -111,7 +106,7 @@ def createItem():
     found = 0
     while found == 0:
         name = input("What would you like the name of your item to be?")
-        mycursor.execute("SELECT * FROM Catalog WHERE Name = (%s)", (name))
+        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name))
         for x in mycursor:
             found += 1
         if found != 0:
@@ -149,7 +144,7 @@ def createItem():
     else:
         upgrade = False
     try:
-        mycursor.exectute("INSERT INTO Item(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,W_A_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
+        mycursor.exectute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,W_A_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
         db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
