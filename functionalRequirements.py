@@ -77,7 +77,7 @@ def createCatalog(id: int):
         print("Error: {}".format(err))
     print("New catalog created successfully.")
 
-    mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = id")
+    mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = (%s)", (id,))
 
 def createInventory(id: int):
     found = 0
@@ -97,7 +97,7 @@ def createInventory(id: int):
         print("Error: {}".format(err))
     print("New inventory created successfully.")
 
-    mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = id")
+    mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (id,))
 
 def createItem(id: int):
     found = 0
@@ -108,6 +108,8 @@ def createItem(id: int):
             found += 1
         if found == 0:
             print("That item catlog does not exist. Please enter a valid catalog.")
+        if found != 0:
+            mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
     
     found = 0
     while found == 0:
