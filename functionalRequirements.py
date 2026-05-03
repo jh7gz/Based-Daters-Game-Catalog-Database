@@ -110,6 +110,7 @@ def createCatalog(id: int):
 
 def createInventory(id: int):
     found = 0
+    catalogID = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an inventory for.")
         if catalog == '0':
@@ -118,14 +119,15 @@ def createInventory(id: int):
         for x in mycursor:
             found += 1
         if found == 0:
-            print("That item catalog does not exist. Please enter a valid catalog.")
+            print("That item catlog does not exist. Please enter a valid catalog.")
+        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
         
     name = input("What would you like the name of your inventory to be?")
     if name == '0':
         return
     
     try:
-        mycursor.execute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
+        mycursor.execute("INSERT INTO INVENTORY(Catalog_ID,Name) VALUES (%s,%s)", (catalogID,name))
         db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
@@ -560,15 +562,18 @@ def updateInventory(id: int):
         else:
             itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
     
-    choice = input("Would you like to add or remove items from your inventory? (Add = 1, Remove = 0)")
-    if choice == 1:
-        add = int(input("How much of the item would you like to add?"))
-        if add <= af.checkQuanity(id):
-            mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
-    if choice == 0:
-        remove = int(input("How much of the item would you like to add?"))
-        if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
-            mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
+    choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
+    while choice != 0:
+        if choice == 1:
+            add = int(input("How much of the item would you like to add?"))
+            if add <= af.checkQuanity(id):
+                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
+            else:
+                print ("There is not enough of this item to add to your inventory")
+        if choice == 2:
+            remove = int(input("How much of the item would you like to add?"))
+            if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
+                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
     pass
 
 
