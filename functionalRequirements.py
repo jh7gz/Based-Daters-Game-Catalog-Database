@@ -100,7 +100,7 @@ def createInventory(id: int):
 
     mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (id,))
 
-def createItem(id: int):
+def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc TODO
     found = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an item for.")

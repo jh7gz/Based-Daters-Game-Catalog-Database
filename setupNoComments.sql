@@ -20,8 +20,9 @@ Name VARCHAR(100) NOT NULL UNIQUE
 CREATE TABLE INVENTORY (
 Inventory_ID INT AUTO_INCREMENT,
 Catalog_ID INT,
-
 Name VARCHAR(100),
+
+UNIQUE (Catalog_ID, Name),
 PRIMARY KEY (Inventory_ID, Catalog_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
     ON DELETE CASCADE
@@ -37,13 +38,16 @@ Overall_Quan INT,
 Description TEXT,
 Category VARCHAR(50),
 Rarity VARCHAR(50),
-
 Name VARCHAR(100),
 
 C_Flag BIT,
 R_Flag BIT,
 WA_Flag BIT,
 UI_Flag BIT,
+
+UNIQUE (Catalog_ID, Name),
+CHECK (WA_Flag != C_Flag),
+CHECK (UI_Flag = 0 OR (WA_Flag = 1 AND R_Flag = 1)),
 PRIMARY KEY (Item_ID, Catalog_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)
     ON DELETE CASCADE
@@ -92,7 +96,7 @@ CREATE TABLE WEAPON_ARMOR_EQUIPPED (
 Item_ID INT,
 Inventory_ID INT,
 Catalog_ID INT,
-PRIMARY KEY (Item_ID, Catalog_ID, Inventory_ID),
+PRIMARY KEY (Item_ID, Inventory_ID, Catalog_ID),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -130,9 +134,9 @@ FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 CREATE TABLE ITEM_WEAPON_ARMOR_RANGE (
 Item_ID INT,
 Catalog_ID INT,
-Range INT,
+WARange INT,
 Damage INT,
-PRIMARY KEY (Item_ID, Catalog_ID, Range),
+PRIMARY KEY (Item_ID, Catalog_ID, WARange),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -142,8 +146,8 @@ FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 CREATE TABLE ITEM_WEAPON_ARMOR_TYPE (
 Item_ID INT,
 Catalog_ID INT,
-Type VARCHAR(50),
-PRIMARY KEY (Item_ID, Catalog_ID, Type),
+WAType VARCHAR(50),
+PRIMARY KEY (Item_ID, Catalog_ID, WAType),
 FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
     ON DELETE CASCADE
     ON UPDATE CASCADE

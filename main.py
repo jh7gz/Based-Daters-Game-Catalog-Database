@@ -56,20 +56,20 @@ def menu():
     while action != 0:
         print("----------------Welcome to the Game Catalog Database----------------")
         print("Choose your actions:")
-        print("1. Create tuple\t\t\t2. Update tuple")
+        print("1. Create tuple\t\t\t2. Modify tuple")
         #1 will include creating catalog, inventory, and item
-        #2 will include updating existing tuples
+        #2 will include modifying existing tuples
         print("3. Delete tuple\t\t\t4. Search tuple")
         #3 will include deleting items, catalogs, and inventories or this account
         #4 will include searching catalogs and inventories and items
         print("5. Sort tuples\t\t\t6.View tuples")
         #5 will include sorting catalogs and inventories
         #6 will include viewing all tuples in the a catalog, inventory, or such
-        print("7. Update inventory\t\t\t8. Add access")
+        print("7. Edit inventory\t\t\t8. Add access")
         #7 will include equipping items, add or remove items from inventory, craft an item
         #8 will include adding access to inventories or catalogs
         print("0. Quit")
-        action = int(input(""))
+        action = int(input(" Enter your choice: "))
         while action < 0 or action > 8:
             print("Invalid action, please choose from the menu.")
             confirm = input("press enter")
@@ -98,11 +98,11 @@ def menu():
                         menu()
                         break
                 menu()
-            # Update tuple
+            # Modify tuple
             case 2:
                 choice = -1
                 while choice < 0 or choice > 3:
-                    print("What would you like to update?")
+                    print("What would you like to modify?")
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
@@ -210,11 +210,11 @@ def menu():
                         menu()
                         break
                 menu()
-            # Update inventory
+            # Edit inventory
             case 7:
                 choice = -1
                 while choice < 0 or choice > 3:
-                    print("How would you like to update your inventory?")
+                    print("How would you like to edit your inventory?")
                     print("1. Equip an Item")
                     print("2. Add or Remove an Item")
                     print("3. Craft an Item")
