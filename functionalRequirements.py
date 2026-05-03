@@ -562,20 +562,25 @@ def updateInventory(id: int):
         else:
             itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
     
-    choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
+    choice = 1
     while choice != 0:
+        choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
         if choice == 1:
             add = int(input("How much of the item would you like to add?"))
             if add <= af.checkQuanity(id):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
             else:
-                print ("There is not enough of this item to add to your inventory")
+                print ("There is not enough of this item to add to your inventory, please enter a valid number")
         if choice == 2:
             remove = int(input("How much of the item would you like to add?"))
             if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
+            else:
+                print("You are trying to remove too much of the item from your inventory, please try again.")
+        else:
+            print("Invalid option, please try again.")
+        
     pass
-
 
 
 def craftItem(id: int):
