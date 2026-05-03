@@ -48,10 +48,12 @@ def login():
 
                     middle = input("Please input only middle initial: ")
 
+                if psswrd == '0'or first == '0' or last == '0' or middle == '0':
+                    quit()
 
                 try:
                     mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
-                    #db.commit()
+                    db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
@@ -97,7 +99,7 @@ def createCatalog(id: int):
        
     try:
         mycursor.execute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
-        #db.commit()
+        db.commit()
         # print("here")
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
@@ -109,6 +111,8 @@ def createInventory(id: int):
     found = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an inventory for.")
+        if catalog == '0':
+            return
         mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
         for x in mycursor:
             found += 1
@@ -116,9 +120,12 @@ def createInventory(id: int):
             print("That item catlog does not exist. Please enter a valid catalog.")
         
     name = input("What would you like the name of your inventory to be?")
+    if name == '0':
+        return
+    
     try:
-        mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
-        #db.commit()
+        mycursor.execute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
+        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New inventory created successfully.")
@@ -185,8 +192,8 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
     else:
         upgrade = False
     try:
-        mycursor.exectute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
-        #db.commit()
+        mycursor.execute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
+        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New item created successfully.")
@@ -318,8 +325,8 @@ def giveInventoryAccess(id: int):
     catalog = mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
     try:
-        mycursor.exectute("INSERT INTO USER_EDIT_INVENTORY(User_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (userID,catalog,invenID))
-        #db.commit()
+        mycursor.execute("INSERT INTO USER_EDIT_INVENTORY(User_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (userID,catalog,invenID))
+        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     
@@ -359,8 +366,8 @@ def giveCatalogAccess(id: int):
         userID = mycursor.execute("SELECT User_ID FROM USERS WHERE Name = (%s)", (user,))
 
     try:
-        mycursor.exectute("INSERT INTO CREATOR_EDIT_CATALOG(User_ID,Catalog_ID) VALUES (%s)", (userID,catalogID))
-        #db.commit()
+        mycursor.execute("INSERT INTO CREATOR_EDIT_CATALOG(User_ID,Catalog_ID) VALUES (%s)", (userID,catalogID))
+        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     
@@ -409,7 +416,7 @@ def equipItem(id: int):
     
     try:
         mycursor.execute("INSERT INTO WEAPON_ARMOR_EQUIPPED(Item_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (itemID,catalog,invenID))
-        #db.commit()
+        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
 

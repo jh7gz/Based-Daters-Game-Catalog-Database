@@ -23,6 +23,8 @@ def createNoCommentSetup():
         f.write(cleaned)
 
 def Initial_setup():
+    demo = ''
+
     createNoCommentSetup()
     print("Initializing setup...")
     cursor.execute("""
@@ -35,6 +37,9 @@ def Initial_setup():
         print("Database gameCatalogs already exists!")
     else:
         print("Lets create Database gameCatalogs")
+
+        while demo != 'y' and demo != 'n':
+            demo = input("Would you like to preload with the demo data? (y/n)")
 
         # Create and use
         cursor.execute("CREATE DATABASE gameCatalogs")
@@ -49,6 +54,10 @@ def Initial_setup():
     fr.finishSetup()
     af.finishSetup()
     si.finishSetup()
+
+    if demo == 'y':
+        si.Populate_All()
+
     print("Setup complete.\n")
 
 
@@ -72,14 +81,15 @@ def menu(id = -1):
         print("5. Sort tuples\t\t\t6.View tuples")
         #5 will include sorting catalogs and inventories
         #6 will include viewing all tuples in the a catalog, inventory, or such
-        print("7. Edit inventory\t\t\t8. Add access")
+        print("7. Edit inventory\t\t8. Add access")
         #7 will include equipping items, add or remove items from inventory, craft an item
         #8 will include adding access to inventories or catalogs
         print("0. Logout")
+
         action = input("")
-        if action not in str(range(0,10)):
-            menu(id)
-        action = int (action)
+        try: action = int(action)
+        except: menu(id)
+
         while action < 0 or action > 8:
             print("Invalid action, please choose from the menu.")
             confirm = input("press enter")
@@ -95,9 +105,8 @@ def menu(id = -1):
                     print("3. Item")
                     print("0. Back")
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -122,9 +131,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -150,9 +158,8 @@ def menu(id = -1):
                     print("0. Back")
                     
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -178,9 +185,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -205,9 +211,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
@@ -231,9 +236,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -259,9 +263,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -286,9 +289,8 @@ def menu(id = -1):
                     print("0. Back")
 
                     choice = input("")
-                    if choice not in str(range(0,10)):
-                        choice = "-1"
-                    choice = int(choice)
+                    try: choice = int(choice)
+                    except: choice = -1
 
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
