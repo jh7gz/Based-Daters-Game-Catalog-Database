@@ -62,6 +62,7 @@ def login():
             if found != 0:
                 print("That Profile Name is in use, please try again")
                 id = '1'
+                found = 0
 
 
         mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (id,))
@@ -131,8 +132,9 @@ def createInventory(id: int):
 
         if found == 0:
             print("That item catalog does not exist. Please enter a valid catalog.")
-
-
+        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        print(catalogID)
+        
     name = input("What would you like the name of your inventory to be?")
 
     if name == '0':
@@ -527,9 +529,37 @@ def searchSystem(id: int):
     pass
 
 def sortCatalog(id: int):
+    if mycursor.execute("SELECT Creator_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
+        choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+        while choice != 0:
+            if choice == 1:
+                mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s) ORDER BY Name",(id,))
+                for x in mycursor:
+                    print(x)
+            if choice == 2:
+                mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s) ORDER BY Name DESC",(id,))
+                for x in mycursor:
+                    print(x)
+            else:
+                print("Invalid option, please try again.")
+                choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
     pass
 
 def sortInventory(id: int):
+    if mycursor.execute("SELECT Player_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
+        choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+        while choice != 0:
+            if choice == 1:
+                mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s) ORDER BY Name",(id,))
+                for x in mycursor:
+                    print(x)
+            if choice == 2:
+                mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s) ORDER BY Name DESC",(id,))
+                for x in mycursor:
+                    print(x)
+            else:
+                print("Invalid option, please try again.")
+                choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
     pass
 
 def deleteCatalog(id: int):
