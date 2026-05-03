@@ -142,7 +142,7 @@ def createInventory(id: int):
         if found == 0:
             print("That item catalog does not exist. Please enter a valid catalog.")
         # catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        print(catalogID)
+        # print(catalogID)
         
     name = input("What would you like the name of your inventory to be?")
 
@@ -204,12 +204,13 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
         resource = True
     else:
         resource = False
+    consumable = "0"
     weaparm = input("Is your item a weapon or armor? Put 0 if false, and 1 if true.")
     if weaparm == "1":
         weaparm = True
     else:
         weaparm = False
-    consumable = input("Is your item a consumable? Put 0 if false, and 1 if true.")
+        consumable = input("Is your item a consumable? Put 0 if false, and 1 if true.")
     if consumable == "1":
         consumable = True
     else:
@@ -224,6 +225,14 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New item created successfully.")
+
+    #set item effects
+    another = "n"
+    while (weaparm == 1 or consumable == 1) and another == 'y':
+        effect = input("What is the effect your item has? ")
+        constInc = input("What is the numerical modifier of your effect? ")
+        percentInc = input("What is the percent modifier of your effect? ")
+        duration = input("What is the ")
 
     db.commit()
 
