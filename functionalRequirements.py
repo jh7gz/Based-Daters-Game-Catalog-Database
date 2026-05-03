@@ -158,6 +158,11 @@ def createInventory(id: int):
 
     mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (id,))
 
+    mycursor.execute("select inventory_id from inventory where (catalog_id, name) = (%s,%s)", (catalogID, name))
+    invenID = mycursor.fetchone()[0]
+
+    mycursor.execute("Insert into user_edit_inventory(user_id, catalog_id, inventory_id) values (%s, %s, %s)", (id, catalogID, invenID))
+
     db.commit()
 
 def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc TODO
@@ -312,6 +317,7 @@ def modifyItem(id: int):
             continue
 
         break
+
     while True:
         item = input("Which item would you like to modify? ")
         if item == '0':
@@ -397,48 +403,46 @@ def modifyItem(id: int):
     
 
 def giveInventoryAccess(id: int):
-    found = 0
-    invenID = 0
-    inventory = 0
-    while found == 0:
-        inventory = input("Which inventory would you like to give another user access to.")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That inventory does not exist. Please enter a valid inventory.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (Creator_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that inventory")
-                found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
-    found = 0
-    userID = 0
-    while found == 0:
-        user = input("Which user would you like to give access to this inventory?")
+    while True:
+        inventory = input("Which inventory would you like to change access rights? ")
+        if inventory == '0':
+            return
+
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such inventory exists! ")
+            continue
+        
+        mycursor.execute("SELECT * from USER_EDIT_INVENTORY WHERE (User_ID, Inventory_ID) = (%s,%s)", (id,invenID,))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You don't have edit access to that inventory!")
+            continue
+        break
+
+    while True:
+        user = input("Which user would you like to access this inventory? ")
+        if user == '0':
+            return
+
         mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (user,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That user does not exist, Please enter a valid user.")
-        userID = mycursor.execute("SELECT User_ID FROM USERS WHERE Name = (%s)", (user,))
+        try: otherUserID = mycursor.fetchone()[0]
+        except: 
+            print("No such user exists! ")
+            continue
+        break
 
-    catalog = mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+    mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+    catalog = mycursor.fetchone()[0]
 
-    try:
-        mycursor.execute("INSERT INTO USER_EDIT_INVENTORY(User_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (userID,catalog,invenID))
-        db.commit()
-    except mysql.connector.IntegrityError as err:
-        print("Error: {}".format(err))
+    mycursor.execute("INSERT INTO USER_EDIT_INVENTORY(User_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (otherUserID,catalog,invenID,))
     
-    mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (userID,))
+    mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (otherUserID,))
 
     print("Access updated successfully.")
+    db.commit()
 
 def giveCatalogAccess(id: int):
     found = 0
