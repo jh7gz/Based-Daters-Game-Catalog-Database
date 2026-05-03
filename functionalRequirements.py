@@ -118,7 +118,7 @@ def createInventory(id: int):
         for x in mycursor:
             found += 1
         if found == 0:
-            print("That item catlog does not exist. Please enter a valid catalog.")
+            print("That item catalog does not exist. Please enter a valid catalog.")
         
     name = input("What would you like the name of your inventory to be?")
     if name == '0':
