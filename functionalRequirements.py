@@ -16,16 +16,19 @@ def login():
     userid = 0
     found = 0
     while found == 0:
+
         id = input("Please enter your Profile Name (enter 0 to quit or 1 to create a new account): ")
         if id == '0':
             quit()
 
         while id == '1':
+
             id = input("Please enter your new Profile Name : ")
-            mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (id,))
             userid = mycursor.execute("SELECT User_ID FROM USERS WHERE Profile_Name = (%s)", (id,))
+
             for x in mycursor:
                 found += 1
+
             if found == 0:
                 psswrd = input("That Profile Name is available. Please enter a password.")
                 first = input("Please enter your first name")
@@ -37,6 +40,7 @@ def login():
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
+
             if found != 0:
                 print("That Profile Name is in use, please try again")
                 id = '1'
@@ -60,6 +64,8 @@ def login():
             correct += 1
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
+
+    
 
 def createCatalog(id: int):
     found = 0

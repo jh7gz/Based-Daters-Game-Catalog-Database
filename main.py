@@ -3,6 +3,7 @@ import aggregationFunctions as af
 import sampleInput as si
 import mysql.connector
 import re
+import os
 
 db = mysql.connector.connect(
     host="localhost",
@@ -50,8 +51,14 @@ def Initial_setup():
     si.finishSetup()
     print("Setup complete.\n")
 
-def menu():
-    id = fr.login() # Add the ability to sign up (new user)
+
+    if os.path.exists("example.txt"):
+        os.remove("example.txt")
+
+def menu(id = 0):
+    if id == 0:
+        id = fr.login() # Add the ability to sign up (new user)
+
     action =1
     while action != 0:
         print("----------------Welcome to the Game Catalog Database----------------")
@@ -68,12 +75,12 @@ def menu():
         print("7. Edit inventory\t\t\t8. Add access")
         #7 will include equipping items, add or remove items from inventory, craft an item
         #8 will include adding access to inventories or catalogs
-        print("0. Quit")
+        print("0. Logout")
         action = int(input(" Enter your choice: "))
         while action < 0 or action > 8:
             print("Invalid action, please choose from the menu.")
             confirm = input("press enter")
-            action = menu()
+            action = menu(id)
         match action:
             # Create tuple
             case 1:
@@ -83,7 +90,7 @@ def menu():
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -95,9 +102,9 @@ def menu():
                     case 3:
                         fr.createItem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Modify tuple
             case 2:
                 choice = -1
@@ -106,7 +113,7 @@ def menu():
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -118,9 +125,9 @@ def menu():
                     case 3:
                         fr.modifyItem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Delete tuple
             case 3:
                 choice = -1
@@ -129,7 +136,7 @@ def menu():
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -141,9 +148,9 @@ def menu():
                     case 3:
                         fr.deleteItem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Search Tuple
             case 4:
                 choice = -1
@@ -152,7 +159,7 @@ def menu():
                     print("1. Item in a Catalog")
                     print("2. Item in an Inventory")
                     print("3. Name of a Catalog or Inventory")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -164,9 +171,9 @@ def menu():
                     case 3:
                         fr.searchSystem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Sort tuples
             case 5:
                 choice = -1
@@ -174,7 +181,7 @@ def menu():
                     print("What would you like to sort?")
                     print("1. Catalog")
                     print("2. Inventory")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
@@ -184,9 +191,9 @@ def menu():
                     case 2:
                         fr.sortInventory(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # View tuples
             case 6:
                 choice = -1
@@ -195,7 +202,7 @@ def menu():
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -207,9 +214,9 @@ def menu():
                     case 3:
                         fr.viewItem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Edit inventory
             case 7:
                 choice = -1
@@ -218,7 +225,7 @@ def menu():
                     print("1. Equip an Item")
                     print("2. Add or Remove an Item")
                     print("3. Craft an Item")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
@@ -230,9 +237,9 @@ def menu():
                     case 3:
                         fr.craftItem(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
+                menu(id)
             # Add access
             case 8:
                 choice = -1
@@ -240,7 +247,7 @@ def menu():
                     print("Would you like to add access to a catalog or an inventory?")
                     print("1. Catalog")
                     print("2. Inventory")
-                    print("0. Quit")
+                    print("0. Back")
                     choice = int (input(""))
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
@@ -250,12 +257,12 @@ def menu():
                     case 2:
                         fr.giveInventoryAccess(id)
                     case 0:
-                        menu()
+                        menu(id)
                         break
-                menu()
-            # Quit    
+                menu(id)
+            # Logout  
             case 0:
-                quit()
+                menu()
 
 def main():
     Initial_setup()

@@ -96,4 +96,4 @@ def try6():
 
 try6()
 
-conn.commit() 
+# conn.commit() 
