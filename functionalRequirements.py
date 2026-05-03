@@ -8,7 +8,7 @@ db = mysql.connector.connect(
     password = "root"
 )
 
-mycursor = db.cursor()
+mycursor = db.cursor(buffered=True)
 
 def finishSetup():
     mycursor.execute("USE gameCatalogs")
@@ -95,6 +95,8 @@ def createCatalog(id: int):
         for x in mycursor:
             name = ""
             break
+        if name == "0":
+            return
         if name == "":
             print("That item catlog already exists. Please enter a valid new catalog name.")
        
@@ -112,22 +114,32 @@ def createInventory(id: int):
     found = 0
     catalogID = 0
     while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM ITEM_CATALOG")
+        for x in mycursor:
+            for y in x:
+                print(y)
         catalog = input("Which item catalog would you like to create an inventory for.")
         if catalog == '0':
             return
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        
+        mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        
         for x in mycursor:
             found += 1
+            catalogID = x[0]
+
         if found == 0:
             print("That item catalog does not exist. Please enter a valid catalog.")
-        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        
+
+
     name = input("What would you like the name of your inventory to be?")
+
     if name == '0':
         return
     
     try:
-        mycursor.execute("INSERT INTO INVENTORY(Catalog_ID,Name) VALUES (%s,%s)", (catalogID,name))
+        mycursor.execute("INSERT INTO INVENTORY(Name, Catalog_ID) VALUES (%s,%s)", (name, catalogID,))
         db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
@@ -143,7 +155,7 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
         for x in mycursor:
             found += 1
         if found == 0:
-            print("That item catlog does not exist. Please enter a valid catalog.")
+            print("That item catalog does not exist. Please enter a valid catalog.")
         if found != 0:
             newFound = 0
             mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
