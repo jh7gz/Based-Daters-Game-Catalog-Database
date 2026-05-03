@@ -154,17 +154,17 @@ FOREIGN KEY (Item_ID, Catalog_ID) REFERENCES ITEM(Item_ID, Catalog_ID)
 );
 
 -- CRAFTING_RECIPE table
-CREATE TABLE CRAFTING_RECIPE (
-Item_ID_Output INT,
-Catalog_ID_Output INT,
-Item_ID_Input INT,
-Catalog_ID_Input INT,
-Quantity INT,
-PRIMARY KEY (Item_ID_Output, Catalog_ID_Output, Item_ID_Input, Catalog_ID_Input),
-FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM (Item_ID, Catalog_ID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM (Item_ID, Catalog_ID)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-);
+-- CREATE TABLE CRAFTING_RECIPE (
+-- Item_ID_Output INT,
+-- Catalog_ID_Output INT,
+-- Item_ID_Input INT,
+-- Catalog_ID_Input INT,
+-- Quantity INT,
+-- PRIMARY KEY (Item_ID_Output, Catalog_ID_Output, Item_ID_Input, Catalog_ID_Input),
+-- FOREIGN KEY (Item_ID_Output, Catalog_ID_Output) REFERENCES ITEM (Item_ID, Catalog_ID)
+--     ON DELETE CASCADE
+--     ON UPDATE CASCADE,
+-- FOREIGN KEY (Item_ID_Input, Catalog_ID_Input) REFERENCES ITEM (Item_ID, Catalog_ID)
+--     ON DELETE NO ACTION
+--     ON UPDATE NO ACTION
+-- );
