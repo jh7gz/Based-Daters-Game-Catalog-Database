@@ -270,6 +270,19 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
 
     db.commit()
 
+def updateCatalog(id: int):
+
+    catalog = input("Which catalog would you like to update? ")
+
+    mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+    catalogID = mycursor.fetchone()[0]
+
+    newName = input("What would you like to rename the catalog to? ")
+
+    mycursor.execute("UPDATE Item_catalog set name = (%s) where catalog_id = (%s)", (newName, catalogID,))
+
+    print("Catalog successfully updated")
+    db.commit()
 
 def modifyItem(id: int):
     found = 0
