@@ -646,6 +646,23 @@ def updateInventory(id: int):
         
     pass
 
+def viewCatalog():
+    mycursor.execute("SELECT * FROM ITEM_CATALOG")
+    for x in mycursor:
+        print (x)
+    pass
+
+def viewInventory():
+    mycursor.execute("SELECT * FROM INVENTORY")
+    for x in mycursor:
+        print (x)
+    pass
+
+def viewItem():
+    mycursor.execute("SELECT * FROM ITEM")
+    for x in mycursor:
+        print (x)
+    pass
 
 def craftItem(id: int):
     pass
