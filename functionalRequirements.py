@@ -376,7 +376,7 @@ def equipItem(id: int):
     itemID = 0
     while found == 0:
         item = input("Which item would you like to equip?")
-        mycursor.execute("SELECT * FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (invenID,))))
+        mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (invenID,))))
         for x in mycursor:
             found += 1
         if found == 0:
@@ -419,6 +419,7 @@ def searchCatalog(id: int):
                 found = 0
             catalogID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (catalog,))
     
+    found = 0
     item = input("What is the item you are searching for?")
     mycursor.execute("SELECT * FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item, catalogID))
     for x in mycursor:
@@ -426,7 +427,7 @@ def searchCatalog(id: int):
     if found == 0:
         print("The item was not found in this catalog.")
     else:
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Catalog_ID) = (%s)", (item,catalogID))
+        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item,catalogID))
         mycursor.execute("SELECT * FROM ITEM WHERE Name = (%s)", (itemID,))
         itemInfo = mycursor.fetchall()
         itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
@@ -448,7 +449,7 @@ def searchInventory(id: int):
             print("That inventory does not exist. Please enter a valid inventory.")
         if found != 0:
             newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (Creator_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
+            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
             for x in mycursor:
                 newFound += 1
             if newFound == 0:
@@ -456,14 +457,15 @@ def searchInventory(id: int):
                 found = 0
         invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
+    found = 0
     item = input("What is the item you are searching for?")
-    mycursor.execute("SELECT * FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
+    mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
     for x in mycursor:
         found += 1
     if found == 0:
         print("The item was not found in this inventory.")
     else:
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s)", (item,invenID))
+        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
         mycursor.execute("SELECT * FROM ITEM WHERE Name = (%s)", (item,))
         itemInfo = mycursor.fetchall()
         itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
@@ -508,11 +510,47 @@ def deleteInventory(id: int):
 def deleteItem(id: int):
     pass
 
-def checkQuantity(id: int):
+def updateInventory(id: int):
+    found = 0
+    invenID = 0
+    inventory = 0
+    while found == 0:
+        inventory = input("Which inventory would you like to update.")
+        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
+        for x in mycursor:
+            found += 1
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
+        if found != 0:
+            newFound = 0
+            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
+            for x in mycursor:
+                newFound += 1
+            if newFound == 0:
+                print("You do not have edit access for that inventory")
+                found = 0
+        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+
+    found = 0
+    itemID = 0
+    while found == 0:
+        item = input("Which item would you like to update?")
+        mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
+        for x in mycursor:
+            found += 1
+        if found == 0:
+            print("The item was not found in this inventory.")
+        else:
+            itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
+    
+    choice = input("Would you like to add or remove items from your inventory? (Add = 1, Remove = 0)")
+    if choice == 1:
+        add = input("How much of the item would you like to add?")
+        if add < mycursor.execute("SELECT Overall")
+
     pass
 
-def updateInventory(id: int):
-    pass
+
 
 def craftItem(id: int):
     pass
