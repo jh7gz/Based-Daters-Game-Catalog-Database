@@ -44,3 +44,39 @@ def printItemInfo(id: int):
         effectDur = mycursor.execute("SELECT Duration FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))
         print(f"Effect Duration: {effectDur}")
     print(f"Description: {itemDesc}")
+
+
+def findSumWeight(invenID: int):
+    mycursor.execute("SELECT SUM(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    total = mycursor.fetchone()
+    if total == None:
+        total = 0
+    return total
+
+def findMaxWeight(invenID: int):
+    mycursor.execute("SELECT MAX(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    max = mycursor.fetchone()
+    if max == None:
+        max = 0
+    return max
+
+def findMinWeight(invenID: int):
+    mycursor.execute("SELECT MIN(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    min = mycursor.fetchone()
+    if min == None:
+        min = 0
+    return min
+
+def findCountItemsInventory(invenID: int):
+    pass
+
+def findCountItemsCatalog(catID: int):
+    pass
+
+def findCountInventories(id: int):
+    #access to
+    pass
+
+def findCountCatalogs(id: int):
+    #access to
+    pass
