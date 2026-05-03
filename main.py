@@ -61,8 +61,8 @@ def Initial_setup():
     print("Setup complete.\n")
 
 
-    if os.path.exists("example.txt"):
-        os.remove("example.txt")
+    if os.path.exists("setupNoComments.sql"):
+        os.remove("setupNoComments.sql")
 
 def menu(id = -1):
     if id == -1:

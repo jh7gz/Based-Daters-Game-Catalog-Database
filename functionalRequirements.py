@@ -171,7 +171,11 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
             print("That item catalog does not exist. Please enter a valid catalog.")
         if found != 0:
             newFound = 0
-            mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
+
+            mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+            catalogID = mycursor.fetchone()[0]
+
+            mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, catalogID, ))
             for x in mycursor:
                 newFound += 1
             if newFound == 0:
@@ -182,7 +186,7 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
     found = 0
     while found == 0:
         name = input("What would you like the name of your item to be?")
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name))
+        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name,))
         for x in mycursor:
             found += 1
         if found != 0:
@@ -198,6 +202,7 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
     if cat == "0":
         cat = None
     weight = input("What is your items weight in kilograms? Please enter up to 2 decimal places.")
+    weight = float(weight)
     weight = round(weight,2)
     resource = input("Is your item a resource? Put 0 if false, and 1 if true.")
     if resource == "1":
@@ -221,18 +226,47 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
     else:
         upgrade = False
     try:
-        mycursor.execute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
+        mycursor.execute("INSERT INTO ITEM(Catalog_ID,Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (catalogID,weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade,))
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
-    print("New item created successfully.")
 
     #set item effects
-    another = "n"
+    another = 'y'
+    
     while (weaparm == 1 or consumable == 1) and another == 'y':
         effect = input("What is the effect your item has? ")
         constInc = input("What is the numerical modifier of your effect? ")
+        if constInc == '': constInc = 0
+        else: 
+            try: constInc = int(constInc)
+            except: 
+                print("Invalid number") 
+                continue
         percentInc = input("What is the percent modifier of your effect? ")
-        duration = input("What is the ")
+        if percentInc == '': percentInc = 0
+        else: 
+            try: percentInc = int(percentInc)
+            except: 
+                print("Invalid percent") 
+                continue
+        duration = input("What is the duration of your effect? ")
+        if duration == '': duration = 0
+        else: 
+            try: duration = int(duration)
+            except: 
+                print("Invalid duration") 
+                continue
+
+
+        mycursor.execute("SELECT Item_ID FROM ITEM WHERE NAME = (%s)", (name,))
+        itemID = mycursor.fetchone()[0]
+
+        mycursor.execute("INSERT INTO ITEM_EFFECT(Item_ID, Catalog_ID, Effect, Constant_Inc, Percent_Inc, Duration) VALUES (%s, %s, %s, %s, %s, %s)", (itemID, catalogID, effect, constInc, percentInc, duration))
+
+
+        another = input("would you like to add another effect?(y/n) ")
+
+    print("Item created successfully.")
 
     db.commit()
 
