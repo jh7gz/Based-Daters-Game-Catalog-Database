@@ -77,9 +77,10 @@ def login():
         pswd = input("Please enter your password (enter 0 to quit): ")
         if pswd == '0':
             quit()
-        mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s) AND Password = (%s)", (id, pswd))
+        mycursor.execute("SELECT User_ID FROM USERS WHERE Profile_Name = (%s) AND Password = (%s)", (id, pswd))
         for x in mycursor:
             correct += 1
+            userid = x[0]
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
 
@@ -99,17 +100,25 @@ def createCatalog(id: int):
         if name == "0":
             return
         if name == "":
-            print("That item catlog already exists. Please enter a valid new catalog name.")
+            print("That item catalog already exists. Please enter a valid new catalog name.")
        
     try:
         mycursor.execute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
-        db.commit()
+        
         # print("here")
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New catalog created successfully.")
 
     mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = (%s)", (id,))
+
+    # db.commit()
+
+    mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE NAME = (%s)", (name,))
+    catalogID = mycursor.fetchone()[0]
+    mycursor.execute("INSERT INTO CREATOR_EDIT_CATALOG(Creator_ID, Catalog_ID) VALUES (%s, %s)", (id, catalogID,))
+
+    db.commit()
 
 def createInventory(id: int):
     found = 0
@@ -132,7 +141,7 @@ def createInventory(id: int):
 
         if found == 0:
             print("That item catalog does not exist. Please enter a valid catalog.")
-        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        # catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
         print(catalogID)
         
     name = input("What would you like the name of your inventory to be?")
@@ -142,12 +151,14 @@ def createInventory(id: int):
     
     try:
         mycursor.execute("INSERT INTO INVENTORY(Name, Catalog_ID) VALUES (%s,%s)", (name, catalogID,))
-        db.commit()
+        
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New inventory created successfully.")
 
     mycursor.execute("UPDATE USERS SET Player_Flag = 1 WHERE User_ID = (%s)", (id,))
+
+    db.commit()
 
 def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc TODO
     found = 0
@@ -160,7 +171,7 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
             print("That item catalog does not exist. Please enter a valid catalog.")
         if found != 0:
             newFound = 0
-            mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
+            mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
             for x in mycursor:
                 newFound += 1
             if newFound == 0:
@@ -210,10 +221,12 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
         upgrade = False
     try:
         mycursor.execute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
-        db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New item created successfully.")
+
+    db.commit()
+
 
 def modifyItem(id: int):
     found = 0
