@@ -305,6 +305,7 @@ def menu(id = -1):
                 menu(id)
             # Logout  
             case 0:
+                print("You have been logged out")
                 db.commit()
                 menu()
 
