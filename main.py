@@ -243,11 +243,11 @@ def menu(id = -1):
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
-                        fr.viewCatalog(id)
+                        fr.viewCatalog()
                     case 2:
-                        fr.viewInventory(id)
+                        fr.viewInventory()
                     case 3:
-                        fr.viewItem(id)
+                        fr.viewItem()
                     case 0:
                         menu(id)
                         break
