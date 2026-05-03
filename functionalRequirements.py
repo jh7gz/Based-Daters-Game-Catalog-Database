@@ -1,4 +1,5 @@
 import mysql.connector
+import aggregationFunctions as af
 from enum import Enum
 
 db = mysql.connector.connect(
@@ -485,12 +486,7 @@ def searchInventory(id: int):
         print("The item was not found in this inventory.")
     else:
         itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
-        mycursor.execute("SELECT * FROM ITEM WHERE Name = (%s)", (item,))
-        itemInfo = mycursor.fetchall()
-        itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
-        print(f"ID: {itemID}, Catalog ID: {itemCatID}, Name: {itemName},Weight: {itemWeight}, Quantity: {itemNum}, Category: {itemCat}")
-        print(f"Rarity: {itemRare}, Is Consumable: {itemConsumable}, Is Resource: {itemResource}, Is Weapon or Armor: {itemWA}, Is Upgradable: {itemUpgrade}")
-        print(f"Description: {itemDesc}")
+        af.printItemInfo(itemID)
 
     pass
 
@@ -564,9 +560,13 @@ def updateInventory(id: int):
     
     choice = input("Would you like to add or remove items from your inventory? (Add = 1, Remove = 0)")
     if choice == 1:
-        add = input("How much of the item would you like to add?")
-        if add < mycursor.execute("SELECT Overall")
-
+        add = int(input("How much of the item would you like to add?"))
+        if add <= af.checkQuanity(id):
+            mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
+    if choice == 0:
+        remove = int(input("How much of the item would you like to add?"))
+        if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
+            mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
     pass
 
 
