@@ -15,28 +15,43 @@ def finishSetup():
 def login():
     userid = 0
     found = 0
+
     while found == 0:
 
         id = input("Please enter your Profile Name (enter 0 to quit or 1 to create a new account): ")
+
+        #quit on 0
         if id == '0':
             quit()
 
+        # create new username
         while id == '1':
 
-            id = input("Please enter your new Profile Name : ")
+            id = input("Please enter your new Profile Name or type 0 to go back: ")
+
+            if id == "0":
+                found = 0
+                break
+
             userid = mycursor.execute("SELECT User_ID FROM USERS WHERE Profile_Name = (%s)", (id,))
 
             for x in mycursor:
                 found += 1
 
             if found == 0:
-                psswrd = input("That Profile Name is available. Please enter a password.")
-                first = input("Please enter your first name")
-                last = input("Please enter your last name")
-                middle = input("Please enter your middle initial")
+                psswrd = input("That Profile Name is available. Please enter a password: ")
+                first = input("Please enter your first name: ")
+                last = input("Please enter your last name: ")
+                middle = input("Please enter your middle initial: ")
+                
+                while len(middle) > 1:
+
+                    middle = input("Please input only middle initial: ")
+
+
                 try:
                     mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
-                    db.commit()
+                    #db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
@@ -51,9 +66,8 @@ def login():
             found += 1
         if found == 0:
             print("That Profile Name does not exist. Please enter a valid profile name.")
-
-        return userid
     
+
     correct = 0
     while correct == 0:
         pswd = input("Please enter your password (enter 0 to quit): ")
@@ -65,21 +79,26 @@ def login():
         if correct == 0:
             print("That password is not correct. Please enter the correct password.")
 
+    return userid
+
+
     
 
 def createCatalog(id: int):
-    found = 0
-    while found == 0:
+    name = ""
+    while name == "":
         name = input("What would you like the name of the Item Catalog to be?")
         mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (name,))
         for x in mycursor:
-            found += 1
-        if found != 0:
+            name = ""
+            break
+        if name == "":
             print("That item catlog already exists. Please enter a valid new catalog name.")
        
     try:
-        mycursor.exectute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
-        db.commit()
+        mycursor.execute("INSERT INTO ITEM_CATALOG(Name) VALUES (%s)", (name,))
+        #db.commit()
+        # print("here")
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New catalog created successfully.")
@@ -99,7 +118,7 @@ def createInventory(id: int):
     name = input("What would you like the name of your inventory to be?")
     try:
         mycursor.exectute("INSERT INTO INVENTORY(Name) VALUES (%s)", (name,))
-        db.commit()
+        #db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New inventory created successfully.")
@@ -167,7 +186,7 @@ def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc
         upgrade = False
     try:
         mycursor.exectute("INSERT INTO ITEM(Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade))
-        db.commit()
+        #db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     print("New item created successfully.")
@@ -300,7 +319,7 @@ def giveInventoryAccess(id: int):
 
     try:
         mycursor.exectute("INSERT INTO USER_EDIT_INVENTORY(User_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (userID,catalog,invenID))
-        db.commit()
+        #db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     
@@ -341,7 +360,7 @@ def giveCatalogAccess(id: int):
 
     try:
         mycursor.exectute("INSERT INTO CREATOR_EDIT_CATALOG(User_ID,Catalog_ID) VALUES (%s)", (userID,catalogID))
-        db.commit()
+        #db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
     
@@ -390,7 +409,7 @@ def equipItem(id: int):
     
     try:
         mycursor.execute("INSERT INTO WEAPON_ARMOR_EQUIPPED(Item_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (itemID,catalog,invenID))
-        db.commit()
+        #db.commit()
     except mysql.connector.IntegrityError as err:
         print("Error: {}".format(err))
 
