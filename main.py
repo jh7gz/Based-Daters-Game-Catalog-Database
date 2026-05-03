@@ -55,8 +55,8 @@ def Initial_setup():
     if os.path.exists("example.txt"):
         os.remove("example.txt")
 
-def menu(id = 0):
-    if id == 0:
+def menu(id = -1):
+    if id == -1:
         id = fr.login() # Add the ability to sign up (new user)
 
     action =1
@@ -76,7 +76,10 @@ def menu(id = 0):
         #7 will include equipping items, add or remove items from inventory, craft an item
         #8 will include adding access to inventories or catalogs
         print("0. Logout")
-        action = int(input(" Enter your choice: "))
+        action = input("")
+        if action not in str(range(0,10)):
+            menu(id)
+        action = int (action)
         while action < 0 or action > 8:
             print("Invalid action, please choose from the menu.")
             confirm = input("press enter")
@@ -91,7 +94,10 @@ def menu(id = 0):
                     print("2. Inventory")
                     print("3. Item")
                     print("0. Back")
-                    choice = int (input(""))
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -114,7 +120,12 @@ def menu(id = 0):
                     print("2. Inventory")
                     print("3. Item")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -137,7 +148,12 @@ def menu(id = 0):
                     print("2. Inventory")
                     print("3. Item")
                     print("0. Back")
-                    choice = int (input(""))
+                    
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -160,7 +176,12 @@ def menu(id = 0):
                     print("2. Item in an Inventory")
                     print("3. Name of a Catalog or Inventory")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -182,7 +203,12 @@ def menu(id = 0):
                     print("1. Catalog")
                     print("2. Inventory")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
                 match choice:
@@ -203,7 +229,12 @@ def menu(id = 0):
                     print("2. Inventory")
                     print("3. Item")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -226,7 +257,12 @@ def menu(id = 0):
                     print("2. Add or Remove an Item")
                     print("3. Craft an Item")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 3:
                         print("Invalid choice, please try again")
                 match choice:
@@ -248,7 +284,12 @@ def menu(id = 0):
                     print("1. Catalog")
                     print("2. Inventory")
                     print("0. Back")
-                    choice = int (input(""))
+
+                    choice = input("")
+                    if choice not in str(range(0,10)):
+                        choice = "-1"
+                    choice = int(choice)
+
                     if choice < 0 or choice > 2:
                         print("Invalid choice, please try again")
                 match choice:
@@ -262,6 +303,7 @@ def menu(id = 0):
                 menu(id)
             # Logout  
             case 0:
+                db.commit()
                 menu()
 
 def main():
