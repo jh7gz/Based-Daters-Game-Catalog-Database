@@ -445,45 +445,44 @@ def giveInventoryAccess(id: int):
     db.commit()
 
 def giveCatalogAccess(id: int):
-    found = 0
-    catalogID = 0
-    while found == 0:
-        catalog = input("Which item catalog would you like to give another user access to.")
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That item catlog does not exist. Please enter a valid catalog.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that catalog")
-                found = 0
-        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
 
-    found = 0
-    userID = 0
-    while found == 0:
-        user = input("Which user would you like to give access to this catalog?")
+    while True:
+        catalog = input("Which catalog would you like to change access rights? ")
+        if catalog == '0':
+            return
+
+        mycursor.execute("SELECT catalog_id FROM item_catalog WHERE Name = (%s)", (catalog,))
+        try: catalogID = mycursor.fetchone()[0]
+        except: 
+            print("No such catalog exists! ")
+            continue
+        
+        mycursor.execute("select * from creator_edit_catalog where (creator_id, catalog_id) = (%s,%s)", (id, catalogID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have edit access for that catalog! ")
+            continue
+        break
+
+    while True:
+        user = input("Which user would you like to access this catalog? ")
+        if user == '0':
+            return
+
         mycursor.execute("SELECT * FROM USERS WHERE Profile_Name = (%s)", (user,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That user does not exist, Please enter a valid user.")
-        userID = mycursor.execute("SELECT User_ID FROM USERS WHERE Name = (%s)", (user,))
+        try: otherUserID = mycursor.fetchone()[0]
+        except: 
+            print("No such user exists! ")
+            continue
+        break
 
-    try:
-        mycursor.execute("INSERT INTO CREATOR_EDIT_CATALOG(User_ID,Catalog_ID) VALUES (%s)", (userID,catalogID))
-        db.commit()
-    except mysql.connector.IntegrityError as err:
-        print("Error: {}".format(err))
+    mycursor.execute("INSERT INTO CREATOR_EDIT_CATALOG(Creator_ID,Catalog_ID) VALUES (%s,%s)", (otherUserID,catalogID,))
     
-    mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = (%s)", (userID,))
+    mycursor.execute("UPDATE USERS SET Creator_Flag = 1 WHERE User_ID = (%s)", (otherUserID,))
 
     print("Access updated successfully.")
+    db.commit()
+
 
 def equipItem(id: int):
     found = 0
