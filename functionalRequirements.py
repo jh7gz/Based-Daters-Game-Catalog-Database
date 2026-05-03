@@ -448,12 +448,7 @@ def searchCatalog(id: int):
         print("The item was not found in this catalog.")
     else:
         itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item,catalogID))
-        mycursor.execute("SELECT * FROM ITEM WHERE Name = (%s)", (itemID,))
-        itemInfo = mycursor.fetchall()
-        itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
-        print(f"ID: {itemID}, Catalog ID: {itemCatID}, Name: {itemName},Weight: {itemWeight}, Quantity: {itemNum}, Category: {itemCat}")
-        print(f"Rarity: {itemRare}, Is Consumable: {itemConsumable}, Is Resource: {itemResource}, Is Weapon or Armor: {itemWA}, Is Upgradable: {itemUpgrade}")
-        print(f"Description: {itemDesc}")
+        af.printItemInfo(itemID)
     pass
 
 def searchInventory(id: int):

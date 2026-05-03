@@ -22,9 +22,18 @@ def checkQuantity(id: int):
     return total
 
 def printItemInfo(id: int):
-    mycursor.execute("SELECT * FROM ITEM WHERE Item_ID = (%s)", (itemID,))
+    mycursor.execute("SELECT * FROM ITEM WHERE Item_ID = (%s)", (id,))
     itemInfo = mycursor.fetchall()
     itemID,itemCatID,itemWeight,itemNum,itemDesc,itemCat,itemRare,itemName,itemConsumable,itemResource,itemWA,itemUpgrade = itemInfo
     print(f"ID: {itemID}, Catalog ID: {itemCatID}, Name: {itemName},Weight: {itemWeight}, Quantity: {itemNum}, Category: {itemCat}")
     print(f"Rarity: {itemRare}, Is Consumable: {itemConsumable}, Is Resource: {itemResource}, Is Weapon or Armor: {itemWA}, Is Upgradable: {itemUpgrade}")
+    if itemWA == 1:
+        print(f"Weapon/Armor Type: {mycursor.execute("SELECT WAType FROM ITEM_WEAPON_ARMOR_TYPE WHERE Item_ID = (%s)",(id,))}")
+        print(f"Weapon/Armor Range: {mycursor.execute("SELECT WARange FROM ITEM_WEAPON_ARMOR_RANGE WHERE Item_ID = (%s)",(id,))}")
+        print(f"Weapon/Armor Damage: {mycursor.execute("SELECT Damage FROM ITEM_WEAPON_ARMOR_RANGE WHERE Item_ID = (%s)",(id,))}")
+    if itemConsumable == 1 or itemWA == 1:
+        print(f"Item Effect: {mycursor.execute("SELECT Effect FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))}")
+        print(f"Inceased By: {mycursor.execute("SELECT Constant_Inc FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))}")
+        print(f"Percent Increase: {mycursor.execute("SELECT Percent_Inc FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))}")
+        print(f"Effect Duration: {mycursor.execute("SELECT Duration FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))}")
     print(f"Description: {itemDesc}")
