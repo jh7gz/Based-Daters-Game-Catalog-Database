@@ -982,7 +982,9 @@ def searchSystem(id: int):
         print(f"Catalog ID: {catalogID}, Name: {name}")
         
 def sortCatalog(id: int):
-    if mycursor.execute("SELECT Creator_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
+    mycursor.execute("SELECT Player_Flag FROM USERS WHERE User_ID = (%s)",(id,))
+    flag = mycursor.fetchone()[0]
+    if flag == 1:   
         choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
         while choice != 0:
             if choice == 1:
