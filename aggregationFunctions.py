@@ -51,37 +51,137 @@ def printItemInfo(id: int):
     print(f"Description: {itemDesc}")
 
 
-def findSumWeight(invenID: int):
+def findSumWeight():
+    found = 0
+    invenID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM INVENTORY")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        inven = input("Which inventory would you like to know the amount of items.")
+        if inven == '0':
+            break
+        
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        
+        for x in mycursor:
+            found += 1
+            invenID = x[0]
+
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
     mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
-    total = mycursor.fetchone()
-    if total == None:
+    total[0] = mycursor.fetchone()
+    if total is None:
         total = 0
     return total
 
-def findMaxWeight(invenID: int):
+def findMaxWeight():
+    found = 0
+    invenID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM INVENTORY")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        inven = input("Which inventory would you like to know the amount of items.")
+        if inven == '0':
+            break
+        
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        
+        for x in mycursor:
+            found += 1
+            invenID = x[0]
+
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
     mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
-    max = mycursor.fetchone()
-    if max == None:
+    max[0] = mycursor.fetchone()
+    if max is None:
         max = 0
     return max
 
-def findMinWeight(invenID: int):
+def findMinWeight():
+    found = 0
+    invenID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM INVENTORY")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        inven = input("Which inventory would you like to know the amount of items.")
+        if inven == '0':
+            break
+        
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        
+        for x in mycursor:
+            found += 1
+            invenID = x[0]
+
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
     mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
-    min = mycursor.fetchone()
-    if min == None:
+    min[0] = mycursor.fetchone()
+    if min is None:
         min = 0
     return min
 
-def findCountItemsInventory(invenID: int):
-    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Inventory_ID = (%s)", (invenID,))
-    total = mycursor.fetchone()
-    if total == None:
-        total = 0
-    return total
+def findCountItemsInventory():
+    found = 0
+    invenID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM INVENTORY")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        inven = input("Which inventory would you like to know the amount of items.")
+        if inven == '0':
+            break
+        
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        
+        for x in mycursor:
+            found += 1
+            invenID = x[0]
 
-def findCountItemsCatalog(catID: int):
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
+    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Inventory_ID = (%s)", (invenID,))
     count = 0
-    mycursor.execute("SELECT * FROM ITEM WHERE Catalog_ID = (%s)",(catID,))
+    for x in mycursor:
+        count+=1
+    return count
+
+def findCountItemsCatalog():
+    found = 0
+    catalogID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM ITEM_CATALOG")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        catalog = input("Which item catalog would you like to know the amount of items.")
+        if catalog == '0':
+            return
+                        
+        mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+                        
+        for x in mycursor:
+            found += 1
+            catalogID = x[0]
+
+        if found == 0:
+            print("That item catalog does not exist. Please enter a valid catalog.")
+    count = 0
+    mycursor.execute("SELECT * FROM ITEM WHERE Catalog_ID = (%s)",(catalogID,))
     for x in mycursor:
         count+=1
     return count
@@ -99,3 +199,113 @@ def findCountCatalogs(id: int):
     for x in mycursor:
         count+=1
     return count
+
+def findCountCreatorsEditCatalog():
+    found = 0
+    catalogID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM ITEM_CATALOG")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        catalog = input("Which item catalog would you like to know the amount of editors.")
+        if catalog == '0':
+            return
+                        
+        mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+                        
+        for x in mycursor:
+            found += 1
+            catalogID = x[0]
+
+        if found == 0:
+            print("That item catalog does not exist. Please enter a valid catalog.")
+        
+    count = 0
+    mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Catalog_ID = (%s)",(catalogID,))
+    for x in mycursor:
+        count+=1
+    return count
+
+
+def findCountUsersEditInventory():
+    found = 0
+    invenID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM INVENTORY")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        inven = input("Which inventory would you like to know the amount of editors.")
+        if inven == '0':
+            break
+        
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        
+        for x in mycursor:
+            found += 1
+            invenID = x[0]
+
+        if found == 0:
+            print("That inventory does not exist. Please enter a valid inventory.")
+    mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE Inventory_ID = (%s)", (invenID,))
+    count = 0
+    for x in mycursor:
+        count+=1
+    return count
+
+def getMaxWeightCatalog():
+    found = 0
+    catID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM ITEM_CATALOG")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        catalog = input("Which catalog would you like to know the max weight of.")
+        if catalog == '0':
+            break
+        
+        mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        
+        for x in mycursor:
+            found += 1
+            catID = x[0]
+
+        if found == 0:
+            print("That catalog does not exist. Please enter a valid catalog.")
+    mycursor.execute("SELECT MAX(Weight) FROM ITEM_CATALOG JOIN ITEM ON ITEM_CATALOG.Catalog_ID = ITEM.Catalog_ID WHERE ITEM.Catalog_ID = (%s)", (catID,))
+    max[0] = mycursor.fetchone()
+    if max is None:
+        max = 0
+    return max
+
+def getMinWeightInventory():
+    found = 0
+    catID = 0
+    while found == 0:
+        print("Here are your options:")
+        mycursor.execute("SELECT Name FROM ITEM_CATALOG")
+        for x in mycursor:
+            for y in x:
+                print(y)
+        catalog = input("Which catalog would you like to know the max weight of.")
+        if catalog == '0':
+            break
+        
+        mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        
+        for x in mycursor:
+            found += 1
+            catID = x[0]
+
+        if found == 0:
+            print("That catalog does not exist. Please enter a valid catalog.")
+    mycursor.execute("SELECT MIN(Weight) FROM ITEM_CATALOG JOIN ITEM ON ITEM_CATALOG.Catalog_ID = ITEM.Catalog_ID WHERE ITEM.Catalog_ID = (%s)", (catID,))
+    min[0] = mycursor.fetchone()
+    if min is None:
+        min = 0
+    return min
