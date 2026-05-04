@@ -54,13 +54,15 @@ def login():
                     quit()
 
                 try:
-                    mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
+                    mycursor.execute("SELECT MAX(User_ID) FROM USERS")
+                    thisID = mycursor.fetchone()[0] + 1
+                    mycursor.execute("INSERT INTO USERS(User_ID,Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s,%s)", (thisID,id,psswrd,first,middle,last))
                     db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 try:
-                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(userid,email))
-                    db.commit
+                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(thisID,email))
+                    db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
@@ -438,7 +440,7 @@ def modifyInventory(id):
         mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
         try: invenID = mycursor.fetchone()[0]
         except: 
-            print("No such catalog exists! ")
+            print("No such inventory exists! ")
             continue
         break
 
@@ -450,7 +452,6 @@ def modifyInventory(id):
     print("Inventory successfully updated")
     db.commit()
 
-# TODO add ranges and types of weapon/armor. Add ability to modify effects
 def modifyItem(id: int):
 
     while True:
@@ -489,10 +490,9 @@ def modifyItem(id: int):
         print("What would you like to modify?")
         print("1. Name\t\t\t2. Description\t\t\t3. Rarity")
         print("4. Weight\t\t\t5. Quantity\t\t\t6. Category")
-        print("7. Weapon/Armor Status\t\t\t8. Craftable Status")
+        print("7. Weapon/Armor Status\t\t\t 8.Type" )
         print("9. Resource Status\t\t\t10. Consumable Status")
         print("11. Effects\t\t\t12. Ranges/Damage")
-        print("13. Type")
         print("0. Quit")
 
         
@@ -539,22 +539,6 @@ def modifyItem(id: int):
                                    
                 if update == 0 or update == 1:
                     mycursor.execute("UPDATE ITEM SET WA_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
-                else:
-                    print("Invalid input")
-            case 8:
-                flag = True
-                while flag:
-                    update = input("Would you like the item to be craftable (1 for yes, 0 for no)?")
-                    try: update = int(update)
-                    except: 
-                        update = -1    
-                    if update > 2 or update < 0:
-                        print("Please enter a valid input. ")
-                    else:                    
-                        flag = False
-                    
-                if update == 0 or update == 1:
-                    mycursor.execute("UPDATE ITEM SET C_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
                 else:
                     print("Invalid input")
             case 9:
@@ -713,7 +697,7 @@ def modifyItem(id: int):
 
 
 
-            case 13:
+            case 8:
                 #types
                 mycursor.execute("select wa_flag from item where item_id = (%s)", (itemID,))
                 weaparm = mycursor.fetchone()[0]
