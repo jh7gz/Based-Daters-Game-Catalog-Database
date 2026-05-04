@@ -438,7 +438,7 @@ def modifyInventory(id):
         mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
         try: invenID = mycursor.fetchone()[0]
         except: 
-            print("No such catalog exists! ")
+            print("No such inventory exists! ")
             continue
         break
 
@@ -450,7 +450,6 @@ def modifyInventory(id):
     print("Inventory successfully updated")
     db.commit()
 
-# TODO add ranges and types of weapon/armor. Add ability to modify effects
 def modifyItem(id: int):
 
     while True:
