@@ -1005,23 +1005,27 @@ def searchSystem(id: int):
         print(f"Catalog ID: {catalogID}, Name: {name}")
         
 def sortCatalog(id: int):
-    mycursor.execute("SELECT Player_Flag FROM USERS WHERE User_ID = (%s)",(id,))
+    mycursor.execute("SELECT creator_flag FROM USERS WHERE User_ID = (%s)",(id,))
     flag = mycursor.fetchone()[0]
     if flag == 1:   
-        choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+        choice = -1
         while choice != 0:
+
+            try: choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+            except: choice = -1
+
             if choice == 1:
-                mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s) ORDER BY Name",(id,))
+                mycursor.execute("SELECT Name FROM creator_edit_catalog JOIN item_catalog ON creator_edit_catalog.catalog_id = item_catalog.catalog_id WHERE creator_id = (%s) ORDER BY Name ASC",(id,))
                 for x in mycursor:
                     print(x)
-            if choice == 2:
-                mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s) ORDER BY Name DESC",(id,))
+            elif choice == 2:
+                mycursor.execute("SELECT Name FROM creator_edit_catalog JOIN item_catalog ON creator_edit_catalog.catalog_id = item_catalog.catalog_id WHERE creator_id = (%s) ORDER BY Name DESC",(id,))
                 for x in mycursor:
                     print(x)
+            elif choice == 0:
+                return
             else:
                 print("Invalid option, please try again.")
-                choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
-    pass
 
 def sortInventory(id: int):
 
