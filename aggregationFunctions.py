@@ -18,8 +18,13 @@ def getNumInventories(playerID):
     return mycursor.quantity
 
 def checkQuantity(id: int):
-    total = mycursor.execute("SELECT Overall_Quan FROM ITEM WHERE Item_ID = (%s)", (id,)) - mycursor.execute("SELECT SUM (Quantity) FROM CONTAINS_ITEM WHERE Item_ID = (%s)",(id,)) 
-    return total
+    mycursor.execute("SELECT Overall_Quan FROM ITEM WHERE Item_ID = (%s)", (id,)) 
+    overall = mycursor.fetchone()[0]
+    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Item_ID = (%s)",(id,)) 
+    current = mycursor.fetchone()[0]
+    if current is None:
+        current = 0
+    return overall - current
 
 def printItemInfo(id: int):
     mycursor.execute("SELECT * FROM ITEM WHERE Item_ID = (%s)", (id,))
@@ -47,21 +52,21 @@ def printItemInfo(id: int):
 
 
 def findSumWeight(invenID: int):
-    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     total = mycursor.fetchone()
     if total == None:
         total = 0
     return total
 
 def findMaxWeight(invenID: int):
-    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     max = mycursor.fetchone()
     if max == None:
         max = 0
     return max
 
 def findMinWeight(invenID: int):
-    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     min = mycursor.fetchone()
     if min == None:
         min = 0
