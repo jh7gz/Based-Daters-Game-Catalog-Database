@@ -46,7 +46,7 @@ WA_Flag BIT,
 UI_Flag BIT,
 
 UNIQUE (Catalog_ID, Name),
-CHECK (WA_Flag != C_Flag),
+CHECK (WA_Flag = 0 OR C_Flag = 0),
 CHECK (UI_Flag = 0 OR (WA_Flag = 1 AND R_Flag = 1)),
 PRIMARY KEY (Item_ID, Catalog_ID),
 FOREIGN KEY (Catalog_ID) REFERENCES ITEM_CATALOG(Catalog_ID)

@@ -48,7 +48,18 @@ def Initial_setup():
         # Read and execute setup.sql file
         with open("setupNoComments.sql", "r", encoding="utf-8") as file:
             sql_script = file.read()
-        cursor.execute(sql_script)
+
+        statements = [s.strip() for s in sql_script.split(";") if s.strip()]
+
+        for stmt in statements:
+            try:
+                cursor.execute(stmt)
+            except Exception as e:
+                print("Error in statement:", stmt)
+                print(e)
+                break
+
+        db.commit()
 
     # Finish setting up additional files
     fr.finishSetup()

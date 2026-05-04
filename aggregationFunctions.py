@@ -18,8 +18,13 @@ def getNumInventories(playerID):
     return mycursor.quantity
 
 def checkQuantity(id: int):
-    total = mycursor.execute("SELECT Overall_Quan FROM ITEM WHERE Item_ID = (%s)", (id,)) - mycursor.execute("SELECT SUM (Quantity) FROM CONTAINS_ITEM WHERE Item_ID = (%s)",(id,)) 
-    return total
+    mycursor.execute("SELECT Overall_Quan FROM ITEM WHERE Item_ID = (%s)", (id,)) 
+    overall = mycursor.fetchone()[0]
+    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Item_ID = (%s)",(id,)) 
+    current = mycursor.fetchone()[0]
+    if current is None:
+        current = 0
+    return overall - current
 
 def printItemInfo(id: int):
     mycursor.execute("SELECT * FROM ITEM WHERE Item_ID = (%s)", (id,))
