@@ -150,7 +150,7 @@ def menu(id = -1):
                     case 1:
                         fr.updateCatalog(id)
                     case 2:
-                        fr.updateInventory(id)
+                        fr.modifyInventory(id)
                     case 3:
                         fr.modifyItem(id)
                     case 0:

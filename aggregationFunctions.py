@@ -309,3 +309,4 @@ def getMinWeightInventory():
     if min is None:
         min = 0
     return min
+

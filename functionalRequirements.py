@@ -310,6 +310,27 @@ def updateCatalog(id: int):
     print("Catalog successfully updated")
     db.commit()
 
+def modifyInventory(id):
+    
+    while True:
+        inven = input("Which inventory would you like to update? ")
+        if inven == '0':
+            return
+
+        mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such catalog exists! ")
+            continue
+        break
+
+
+    newName = input("What would you like to rename the inventory to? ")
+
+    mycursor.execute("UPDATE INVENTORY set name = (%s) where inventory_id = (%s)", (newName, invenID,))
+
+    print("Inventory successfully updated")
+    db.commit()
 
 # TODO add ranges and types of weapon/armor. Add ability to modify effects
 def modifyItem(id: int):
