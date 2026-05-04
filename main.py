@@ -48,7 +48,18 @@ def Initial_setup():
         # Read and execute setup.sql file
         with open("setupNoComments.sql", "r", encoding="utf-8") as file:
             sql_script = file.read()
-        cursor.execute(sql_script)
+
+        statements = [s.strip() for s in sql_script.split(";") if s.strip()]
+
+        for stmt in statements:
+            try:
+                cursor.execute(stmt)
+            except Exception as e:
+                print("Error in statement:", stmt)
+                print(e)
+                break
+
+        db.commit()
 
     # Finish setting up additional files
     fr.finishSetup()
@@ -119,7 +130,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Modify tuple
             case 2:
                 choice = -1
@@ -146,7 +156,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Delete tuple
             case 3:
                 choice = -1
@@ -173,7 +182,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Search Tuple
             case 4:
                 choice = -1
@@ -200,7 +208,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Sort tuples
             case 5:
                 choice = -1
@@ -224,7 +231,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # View tuples
             case 6:
                 choice = -1
@@ -272,7 +278,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Edit inventory
             case 7:
                 choice = -1
@@ -299,7 +304,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Add access
             case 8:
                 choice = -1
@@ -323,12 +327,18 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
+                    
+                
             # Logout  
             case 0:
                 print("You have been logged out")
                 db.commit()
                 menu()
+
+        print()
+        input("Press enter to continue")
+        menu(id)
+
 
 def main():
     Initial_setup()
