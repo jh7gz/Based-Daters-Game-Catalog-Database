@@ -130,7 +130,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Modify tuple
             case 2:
                 choice = -1
@@ -157,7 +156,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Delete tuple
             case 3:
                 choice = -1
@@ -184,7 +182,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Search Tuple
             case 4:
                 choice = -1
@@ -211,7 +208,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Sort tuples
             case 5:
                 choice = -1
@@ -235,7 +231,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # View tuples
             case 6:
                 choice = -1
@@ -376,7 +371,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Edit inventory
             case 7:
                 choice = -1
@@ -403,7 +397,6 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
             # Add access
             case 8:
                 choice = -1
@@ -427,12 +420,18 @@ def menu(id = -1):
                     case 0:
                         menu(id)
                         break
-                menu(id)
+                    
+                
             # Logout  
             case 0:
                 print("You have been logged out")
                 db.commit()
                 menu()
+
+        print()
+        input("Press enter to continue")
+        menu(id)
+
 
 def main():
     Initial_setup()

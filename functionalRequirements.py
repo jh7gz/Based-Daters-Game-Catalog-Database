@@ -610,24 +610,44 @@ def searchInventory(id: int):
 
 
 def searchSystem(id: int):
-    found = 0
-    while found == 0:
-        name = input("What is the name of the inventory or catalog you would like to search for?")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (name,))
-        for x in mycursor:
-            invenInfo = mycursor.fetchall()
-            catID,invenID,invenName = invenInfo
-            print(f"Catalog ID: {catID}, Inventory ID: {invenID}, Name: {invenName}")
-            found += 1
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (name,))
-        for x in mycursor:
-            catInfo = mycursor.fetchall()
-            userID,catalogID,catName = catInfo
-            print(f"User ID: {userID}, Catalog ID: {catalogID}, Name: {catName}")
-            found += 1
-        if found == 0:
-            print("Name of Inventory or Catalog not found, please input a valid Inventory or Catalog name")
-    pass
+
+    while True:
+        name = input("What is the name of the inventory or catalog you would like to search for? ")
+        if name == '0':
+            return
+
+        mycursor.execute("SELECT * FROM inventory WHERE Name = (%s)", (name,))
+        try: ID = mycursor.fetchone()[0]
+        except: 
+            mycursor.execute("SELECT * from item_catalog where Name = (%s)", (name,))
+            try: ID = mycursor.fetchone()[0]
+            except:
+                print("There are no inventories or catalogs with that name! ")
+                continue
+            
+        
+        mycursor.execute("SELECT * FROM user_edit_inventory WHERE(user_id,inventory_id) = (%s,%s)", (id,ID))
+        try: mycursor.fetchone()[0]
+        except:
+            mycursor.execute("SELECT * FROM creator_edit_catalog WHERE(creator_id,catalog_id) = (%s,%s)", (id,ID))
+            try: mycursor.fetchone()[0]
+            except:
+                print("You do not have access to this inventory/catalog!")
+                continue
+        break
+    
+    mycursor.execute("Select * from inventory where inventory_id = (%s)", (ID,))
+    try:
+        invenID, catID, catName = mycursor.fetchall()[0]
+        print(f"Inventory ID: {invenID}, Catalog ID: {catID}, Name: {catName}")
+    except: 
+        mycursor.execute("Select * from item_catalog where catalog_id = (%s)", (ID,))
+        catalogID, name = mycursor.fetchall()[0]
+        print(f"Catalog ID: {catalogID}, Name: {name}")
+        
+
+
+
 
 def sortCatalog(id: int):
     if mycursor.execute("SELECT Creator_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
