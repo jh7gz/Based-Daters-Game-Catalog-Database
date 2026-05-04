@@ -47,36 +47,50 @@ def printItemInfo(id: int):
 
 
 def findSumWeight(invenID: int):
-    mycursor.execute("SELECT SUM(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     total = mycursor.fetchone()
     if total == None:
         total = 0
     return total
 
 def findMaxWeight(invenID: int):
-    mycursor.execute("SELECT MAX(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     max = mycursor.fetchone()
     if max == None:
         max = 0
     return max
 
 def findMinWeight(invenID: int):
-    mycursor.execute("SELECT MIN(weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     min = mycursor.fetchone()
     if min == None:
         min = 0
     return min
 
 def findCountItemsInventory(invenID: int):
-    pass
+    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Inventory_ID = (%s)", (invenID,))
+    total = mycursor.fetchone()
+    if total == None:
+        total = 0
+    return total
 
 def findCountItemsCatalog(catID: int):
-    pass
+    count = 0
+    mycursor.execute("SELECT * FROM ITEM WHERE Catalog_ID = (%s)",(catID,))
+    for x in mycursor:
+        count+=1
+    return count
 
 def findCountInventories(id: int):
-    #access to
-    pass
+    count = 0
+    mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s)",(id,))
+    for x in mycursor:
+        count+=1
+    return count
 
 def findCountCatalogs(id: int):
-    #access to
-    pass
+    count = 0
+    mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s)",(id,))
+    for x in mycursor:
+        count+=1
+    return count
