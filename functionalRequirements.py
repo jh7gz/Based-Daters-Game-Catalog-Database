@@ -1126,57 +1126,62 @@ def deleteItem(id: int):
         return
 
 def updateInventory(id: int):
-    found = 0
-    invenID = 0
-    inventory = 0
-    while found == 0:
-        inventory = input("Which inventory would you like to update.")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That inventory does not exist. Please enter a valid inventory.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that inventory")
-                found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
-    found = 0
-    itemID = 0
-    while found == 0:
-        item = input("Which item would you like to update?")
-        mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("The item was not found in this inventory.")
-        else:
-            itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
-    
-    choice = 1
-    while choice != 0:
+    while True:
+        inventory = input("What is the name of the inventory you would like to modify? ")
+        if inventory == '0':
+            return
+
+        mycursor.execute("SELECT inventory_id FROM inventory WHERE Name = (%s)", (inventory,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such inventory exists! ")
+            continue
+
+        mycursor.execute("SELECT * FROM user_edit_inventory WHERE (user_id, inventory_id) = (%s, %s)", (id,invenID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have access to this inventory! ")
+            continue
+        break
+
+    while True:
+        item = input("What is the name of the item you would like to modify? ")
+        if item == '0':
+            return
+        
+        mycursor.execute("Select item_id from item where name = (%s)", (item,))
+        itemID = mycursor.fetchone()[0]
+
+        mycursor.execute("SELECT * FROM inventory_id WHERE (item_id, Inventory_ID) = (%s,%s)", (itemID, invenID))
+        try: itemID = mycursor.fetchone()[0]
+        except: 
+            print("No such item exists in this inventory! ")
+            continue
+        break
+
+    while True:
         choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
+        try: choice = int(choice)
+        except:
+            print("Please enter a valid input!")
+            continue
+        if choice < 0 or choice > 2:
+            print("Please enter a valid input! ")
+            continue
         if choice == 1:
             add = int(input("How much of the item would you like to add?"))
-            if add <= af.checkQuanity(id):
+            if add <= af.checkQuanity(itemID):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
             else:
                 print ("There is not enough of this item to add to your inventory, please enter a valid number")
+
         if choice == 2:
             remove = int(input("How much of the item would you like to add?"))
             if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
             else:
                 print("You are trying to remove too much of the item from your inventory, please try again.")
-        else:
-            print("Invalid option, please try again.")
-        
-    pass
 
 def viewCatalog():
     mycursor.execute("SELECT * FROM ITEM_CATALOG")
