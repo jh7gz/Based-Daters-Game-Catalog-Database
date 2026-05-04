@@ -1156,36 +1156,53 @@ def updateInventory(id: int):
             print("That inventory does not exist. Please enter a valid inventory.")
         if found != 0:
             newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
+            invenID += x[0]
+            mycursor.execute("SELECT *FROM USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, invenID))
             for x in mycursor:
                 newFound += 1
             if newFound == 0:
                 print("You do not have edit access for that inventory")
                 found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+        #invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
     found = 0
+    catalogID = 0
     itemID = 0
     while found == 0:
         item = input("Which item would you like to update?")
-        mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
+        mycursor.execute("SELECT Catalog_ID FROM ITEM WHERE (Name) = (%s)", (item,))
         for x in mycursor:
             found += 1
+            catalogID = x[0]
+            mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name) = (%s)", (item,))
+            for x in mycursor:
+                itemID = x[0]
         if found == 0:
-            print("The item was not found in this inventory.")
-        else:
-            itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
+            print("The item was not found in a catalog.")
+        #else:
+            #mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
     
+
+
     choice = 1
     while choice != 0:
-        choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
+        choice = int(input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)"))
         if choice == 1:
             add = int(input("How much of the item would you like to add?"))
-            if add <= af.checkQuanity(id):
+            if add <= af.checkQuantity(id):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
+                print("Item Added Successfully")
             else:
                 print ("There is not enough of this item to add to your inventory, please enter a valid number")
-        if choice == 2:
+        elif choice == 2:
+            found = 0
+            while found == 0:
+                mycursor.execute("SELECT Item_ID FROM CONTAINS_ITEM WHERE (Inventor_ID) = (%s)", (invenID,))
+                for x in mycursor:
+                    found += 1
+                if found == 0:
+                    print("You do not have this item in that inventory.")
+                    break
             remove = int(input("How much of the item would you like to add?"))
             if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
                 mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
