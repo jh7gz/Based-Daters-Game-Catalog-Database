@@ -44,17 +44,23 @@ def login():
                 first = input("Please enter your first name: ")
                 last = input("Please enter your last name: ")
                 middle = input("Please enter your middle initial: ")
+                email = input("Please enter your email.")
                 
                 while len(middle) > 1:
 
                     middle = input("Please input only middle initial: ")
 
-                if psswrd == '0'or first == '0' or last == '0' or middle == '0':
+                if psswrd == '0'or first == '0' or last == '0' or middle == '0' or email == "0":
                     quit()
 
                 try:
                     mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
                     db.commit()
+                except mysql.connector.IntegrityError as err:
+                    print("Error: {}".format(err))
+                try:
+                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(userid,email))
+                    db.commit
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
@@ -288,6 +294,39 @@ def createItem(id: int):
 
     db.commit()
 
+def updateUser(id:int):
+    choice = -1
+    while choice != 0:
+        print("1. Profile Name\t\t\t2. Password")
+        print("3. First name\t\t\t4. Last name")
+        print("5. Middle Initial\t\t\t6. Add an Email")
+        choice = int(input("What would you like to modfiy?"))
+        match choice:
+            case 1:
+                alter = input("What would you like to update your Profile name to?")
+                mycursor.execute("UPDATE USERS SET Profile_Name = (%s) WHERE User_ID = (%s)",(alter,id))
+            case 2:
+                alter = input("What would you like to update your Password to?")
+                mycursor.execute("UPDATE USERS SET Password = (%s) WHERE User_ID = (%s)",(alter,id))
+            case 3:
+                alter = input("What would you like to update your First name to?")
+                mycursor.execute("UPDATE USERS SET F_Name = (%s) WHERE User_ID = (%s)",(alter,id))
+            case 4:
+                alter = input("What would you like to update your Last name to?")
+                mycursor.execute("UPDATE USERS SET L_Name = (%s) WHERE User_ID = (%s)",(alter,id))
+            case 5:
+                alter = input("What would you like to update your Middle initial to?")
+                mycursor.execute("UPDATE USERS SET M_Init = (%s) WHERE User_ID = (%s)",(alter,id))
+            case 6:
+                alter = input("Which email would you like to add?")
+                try:
+                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(id,alter))
+                    db.commit
+                except mysql.connector.IntegrityError as err:
+                    print("Error: {}".format(err))
+                print("Email added successfully")
+    pass
+
 def updateCatalog(id: int):
 
     while True:
@@ -436,8 +475,6 @@ def modifyItem(id: int):
         print("Item modified successfully! ")
         db.commit()
 
-    
-
 def giveInventoryAccess(id: int):
 
     while True:
@@ -518,7 +555,6 @@ def giveCatalogAccess(id: int):
 
     print("Access updated successfully.")
     db.commit()
-
 
 def equipItem(id: int):
  
@@ -602,7 +638,6 @@ def searchCatalog(id: int):
 
     af.printItemInfo(itemID)
 
-
 def searchInventory(id: int):
 
     while True:
@@ -640,7 +675,6 @@ def searchInventory(id: int):
 
     af.printItemInfo(itemID)
 
-
 def searchSystem(id: int):
 
     while True:
@@ -677,7 +711,6 @@ def searchSystem(id: int):
         catalogID, name = mycursor.fetchall()[0]
         print(f"Catalog ID: {catalogID}, Name: {name}")
         
-
 def sortCatalog(id: int):
     if mycursor.execute("SELECT Creator_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
         choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
@@ -719,7 +752,6 @@ def sortInventory(id: int):
             else:
                 print("Invalid option, please try again.")
     
-
 def deleteCatalog(id: int):
 
     while True:
@@ -748,7 +780,6 @@ def deleteCatalog(id: int):
     else:
         print("Catalog NOT deleted!")
         return
-
 
 def deleteInventory(id: int):
 
