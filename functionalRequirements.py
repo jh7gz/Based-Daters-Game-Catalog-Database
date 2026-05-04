@@ -284,6 +284,30 @@ def createItem(id: int):
 
         another = input("would you like to add another effect?(y/n) ")
 
+    #item ranges
+    another = 'y'
+    
+    while weaparm == 1 and another == 'y':
+        range = input("What is the range of your item? ")
+        try: int(range)
+        except: range = 0
+        damage = input("What is damage at that range? ")
+        try: int(damage)
+        except: damage = 0
+
+        mycursor.execute("INSERT INTO item_weapon_armor_range(Item_ID, Catalog_ID, warange, damage) VALUES (%s, %s, %s, %s)", (itemID, catalogID, range, damage,))
+
+        another = input("would you like to add another range?(y/n) ")
+    
+    another = 'y'
+
+    while weaparm == 1 and another == 'y':
+        watype = input("What is the type of your item? ")
+
+        mycursor.execute("INSERT INTO item_weapon_armor_type(Item_ID, Catalog_ID, watype) VALUES (%s, %s, %s)", (itemID, catalogID, watype,))
+
+        another = input("would you like to add another type?(y/n) ")
+
     print("Item created successfully.")
 
     db.commit()
@@ -373,11 +397,13 @@ def modifyItem(id: int):
         print("4. Weight\t\t\t5. Quantity\t\t\t6. Category")
         print("7. Weapon/Armor Status\t\t\t8. Craftable Status")
         print("9. Resource Status\t\t\t10. Consumable Status")
+        print("11. Effects\t\t\t12. Ranges/Damage")
+        print("13. Type")
         print("0. Quit")
 
         
 
-        while choice < 0 or choice > 10:
+        while choice < 0 or choice > 13:
                 try: 
                     choice = int(input(""))
                 except: 
@@ -406,33 +432,247 @@ def modifyItem(id: int):
                 update = input("What would you like the new category to be?")
                 mycursor.execute("UPDATE ITEM SET Category = (%s) WHERE Item_ID = (%s)", (update,itemID,))
             case 7:
-                update = input("Would you like the item to be a weapon or armor (1 for yes, 0 for no)?")
+                flag = True
+                while flag:
+                    update = input("Would you like the item to be a weapon or armor (1 for yes, 0 for no)?")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
+                                   
                 if update == 0 or update == 1:
                     mycursor.execute("UPDATE ITEM SET WA_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
                 else:
                     print("Invalid input")
             case 8:
-                update = input("Would you like the item to be craftable (1 for yes, 0 for no)?")
+                flag = True
+                while flag:
+                    update = input("Would you like the item to be craftable (1 for yes, 0 for no)?")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
+                    
                 if update == 0 or update == 1:
                     mycursor.execute("UPDATE ITEM SET C_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
                 else:
                     print("Invalid input")
             case 9:
-                update = input("Would you like the item to be a resource (1 for yes, 0 for no)?")
+                flag = True
+                while flag:
+                    update = input("Would you like the item to be a resource (1 for yes, 0 for no)?")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
                 if update == 0 or update == 1:
                     mycursor.execute("UPDATE ITEM SET R_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
                 else:
                     print("Invalid input")
             case 10:
-                update = input("Would you like the item to be upgradable (1 for yes, 0 for no)?")
+                flag = True
+                while flag:
+                    update = input("Would you like the item to be upgradable (1 for yes, 0 for no)?")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
                 if update == 0 or update == 1:
                     mycursor.execute("UPDATE ITEM SET UI_Flag = (%s) WHERE Item_ID = (%s)", (update,itemID,))
                 else:
                     print("Invalid input")
+
+            case 11:
+                flag = True
+                while flag:
+                    update = input("Would you like to add(1) or delete(2) an effect? ")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
+
+                if update == 0:
+                    break
+                else:
+
+                    if update == 2:
+                        print("Current Effects:")
+                        mycursor.execute("Select effect, constant_inc, percent_inc, duration from item_effect where item_id = (%s)", (itemID,))
+                        for x in mycursor.fetchall():
+                            effect, constantInc, percentInc, duration = x
+                            print(f"Item ID: {itemID}, Effect: {effect}, Constant Increase: {constantInc}, Percent Increase: {percentInc}, Duration: {duration}")
+                        flag = True
+                        while flag:
+                            effectName = input("\n Which effect would you like to delete?(Input effect name): ")
+                            mycursor.execute("Select * from item_effect where effect = (%s)", (effectName,))
+                            try: mycursor.fetchone()[0]
+                            except: 
+                                print("Input valid effect name!")
+                                continue
+                            flag = False
+                        mycursor.execute("delete from item_effect where effect = (%s)", (effectName,))
+                        print("Effect deleted successfully!")
+
+                    else:
+                        mycursor.execute("select c_flag, wa_flag from item where item_id = (%s)", (itemID,))
+                        consumable, weaparm = mycursor.fetchall()[0]
+
+                    
+                        if consumable == 0 and weaparm == 0:
+                            print("Cannot edit effects if item is neither a weapon nor consumable! ")
+                            break
+                            
+                                                    
+                        else:
+                            effect = input("What is the effect your item has? ")
+                            constInc = input("What is the numerical modifier of your effect? ")
+                            if constInc == '': constInc = 0
+                            else: 
+                                try: constInc = int(constInc)
+                                except: 
+                                    print("Invalid number") 
+                                    continue
+                            percentInc = input("What is the percent modifier of your effect? ")
+                            if percentInc == '': percentInc = 0
+                            else: 
+                                try: percentInc = int(percentInc)
+                                except: 
+                                    print("Invalid percent") 
+                                    continue
+                            duration = input("What is the duration of your effect? ")
+                            if duration == '': duration = 0
+                            else: 
+                                try: duration = int(duration)
+                                except: 
+                                    print("Invalid duration") 
+                                    continue
+
+                            mycursor.execute("INSERT INTO ITEM_EFFECT(Item_ID, Catalog_ID, Effect, Constant_Inc, Percent_Inc, Duration) VALUES (%s, %s, %s, %s, %s, %s)", (itemID, catalogID, effect, constInc, percentInc, duration))
+
+            case 12:
+                #item ranges
+
+                mycursor.execute("select wa_flag from item where item_id = (%s)", (itemID,))
+                weaparm = mycursor.fetchone()[0]
+
+                if weaparm != 1:
+                    print("Items cannot have ranges and damage if they aren't a weapon/armor! ")
+                    break
+
+                flag = True
+                while flag:
+                    update = input("Would you like to add(1) or delete(2) a range? ")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
+
+                if update == 0:
+                    break
+                else:
+                    if update == 1:
+
+                        range = input("What is the range of your item? ")
+                        try: int(range)
+                        except: range = 0
+                        damage = input("What is damage at that range? ")
+                        try: int(damage)
+                        except: damage = 0
+
+                        mycursor.execute("INSERT INTO item_weapon_armor_range(Item_ID, Catalog_ID, warange, damage) VALUES (%s, %s, %s, %s)", (itemID, catalogID, range, damage,))
+
+                    else:
+                        print("Current Ranges:")
+                        mycursor.execute("Select warange, damage  from item_weapon_armor_range where item_id = (%s)", (itemID,))
+                        for x in mycursor.fetchall():
+                            range, damage = x
+                            print(f"Item ID: {itemID}, Range: {range}, Damage: {damage}")
+                        flag = True
+                        while flag:
+                            range = input("\n Which effect would you like to delete?(Input range): ")
+                            mycursor.execute("Select * from item_weapon_armor_range where warange = (%s)", (range,))
+                            try: mycursor.fetchone()[0]
+                            except: 
+                                print("Input valid range!")
+                                continue
+                            flag = False
+                        mycursor.execute("delete from item_weapon_armor_range where warange = (%s)", (range,))
+                        print("Range deleted successfully!")
+
+
+
+            case 13:
+                #types
+                mycursor.execute("select wa_flag from item where item_id = (%s)", (itemID,))
+                weaparm = mycursor.fetchone()[0]
+
+                if weaparm != 1:
+                    print("Items cannot have types if they aren't a weapon/armor! ")
+                    break
+
+                flag = True
+                while flag:
+                    update = input("Would you like to add(1) or delete(2) a type? ")
+                    try: update = int(update)
+                    except: 
+                        update = -1    
+                    if update > 2 or update < 0:
+                        print("Please enter a valid input. ")
+                    else:                    
+                        flag = False
+
+                if update == 0:
+                    break
+                else:
+                    if update == 1:
+
+                        Type = input("What is the type of your item? ")
+                        mycursor.execute("INSERT INTO item_weapon_armor_type(Item_ID, Catalog_ID, watype) VALUES (%s, %s, %s)", (itemID, catalogID, Type))
+
+                    else:
+                        print("Current Types:")
+                        mycursor.execute("Select watype from item_weapon_armor_type where item_id = (%s)", (itemID,))
+                        for x in mycursor.fetchall():
+                            Type = x[0]
+                            print(f"Item ID: {itemID}, Type: {Type}")
+                        flag = True
+                        while flag:
+                            Type = input("\n Which type would you like to delete?(Input type): ")
+                            mycursor.execute("Select * from item_weapon_armor_type where watype = (%s)", (Type,))
+                            try: mycursor.fetchone()[0]
+                            except: 
+                                print("Input valid type!")
+                                continue
+                            flag = False
+                        mycursor.execute("delete from item_weapon_armor_type where watype = (%s)", (Type,))
+                        print("Type deleted successfully!")
+
+
             case 0:
                 db.commit()
-                quit()
+                return
         choice = -1
+
+
+
         print("Item modified successfully! ")
         db.commit()
 
