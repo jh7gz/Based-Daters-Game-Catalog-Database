@@ -646,9 +646,6 @@ def searchSystem(id: int):
         print(f"Catalog ID: {catalogID}, Name: {name}")
         
 
-
-
-
 def sortCatalog(id: int):
     if mycursor.execute("SELECT Creator_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
         choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
@@ -667,21 +664,29 @@ def sortCatalog(id: int):
     pass
 
 def sortInventory(id: int):
-    if mycursor.execute("SELECT Player_Flag FROM USERS WHERE User_ID = (%s)",(id,)) == 1:    
-        choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+
+    mycursor.execute("SELECT Player_Flag FROM USERS WHERE User_ID = (%s)",(id,))
+    flag = mycursor.fetchone()[0]
+    if  flag == 1:    
+        choice = -1
         while choice != 0:
+
+            try: choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
+            except: choice = -1
+
             if choice == 1:
-                mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s) ORDER BY Name",(id,))
+                mycursor.execute("SELECT Name FROM USER_EDIT_INVENTORY JOIN INVENTORY ON USER_EDIT_INVENTORY.Inventory_ID = INVENTORY.Inventory_ID WHERE User_ID = (%s) ORDER BY Name ASC",(id,))
                 for x in mycursor:
                     print(x)
-            if choice == 2:
-                mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s) ORDER BY Name DESC",(id,))
+            elif choice == 2:
+                mycursor.execute("SELECT Name FROM USER_EDIT_INVENTORY JOIN INVENTORY ON USER_EDIT_INVENTORY.Inventory_ID = INVENTORY.Inventory_ID WHERE User_ID = (%s) ORDER BY Name DESC",(id,))
                 for x in mycursor:
                     print(x)
+            elif choice == 0:
+                return
             else:
                 print("Invalid option, please try again.")
-                choice = int(input("Would you like to sort by name in Ascending (1) or Descending (2) order? Enter 0 to quit"))
-    pass
+    
 
 def deleteCatalog(id: int):
     found = 0
