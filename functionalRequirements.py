@@ -485,51 +485,51 @@ def giveCatalogAccess(id: int):
 
 
 def equipItem(id: int):
-    found = 0
-    invenID = 0
-    inventory
-    while found == 0:
-        inventory = input("Which inventory would you like to equip an item from.")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That inventory does not exist. Please enter a valid inventory.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (Creator_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that inventory")
-                found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
-    
-    catalog = mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+ 
+    while True:
+        inventory = input("Which inventory would you like to equip an item from? ")
+        if inventory == '0':
+            return
 
-    found = 0
-    itemID = 0
-    while found == 0:
-        item = input("Which item would you like to equip?")
-        mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (invenID,))))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That item does not exist in this inventory. Please enter a valid item.")
+        mycursor.execute("SELECT inventory_id FROM inventory WHERE Name = (%s)", (inventory,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such inventory exists! ")
+            continue
         
-        check = mycursor.execute("SELECT WA_Flag FROM ITEM WHERE Name = (%s)", (item,))
-        if check != 1:
-            print("This item is not equipable. Please enter an equipable item.")
-            found = 0
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE Name = (%s)", (item,))
-    
-    try:
-        mycursor.execute("INSERT INTO WEAPON_ARMOR_EQUIPPED(Item_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (itemID,catalog,invenID))
-        db.commit()
-    except mysql.connector.IntegrityError as err:
-        print("Error: {}".format(err))
+        mycursor.execute("SELECT * from USER_EDIT_INVENTORY WHERE (user_ID,Inventory_ID) = (%s,%s)", (id, invenID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have edit access for that inventory!")
+            continue
+
+        mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
+        catalogID = mycursor.fetchone()[0]
+        break
+ 
+    while True:
+        item = input("Which item would you like to equip? ")
+        if item == '0':
+            return
+
+        mycursor.execute("SELECT item_id FROM item WHERE (name, catalog_id) = (%s,%s)", (item,catalogID,))
+        try: itemID = mycursor.fetchone()[0]
+        except: 
+            print("No such item exists! ")
+            continue
+        
+        mycursor.execute("SELECT * from item WHERE (item_ID, catalog_id, wa_flag) = (%s,%s,%s)", (itemID, catalogID,1))
+        try: mycursor.fetchone()[0]
+        except:
+            print("That item is not equippable! ")
+            continue
+
+        break
+
+    mycursor.execute("INSERT INTO WEAPON_ARMOR_EQUIPPED(Item_ID,Catalog_ID,Inventory_ID) VALUES (%s,%s,%s)", (itemID,catalogID,invenID))
 
     print("Item equipped successfully")
+    db.commit()
 
 def searchCatalog(id: int):
     found = 0
