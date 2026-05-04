@@ -47,21 +47,21 @@ def printItemInfo(id: int):
 
 
 def findSumWeight(invenID: int):
-    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     total = mycursor.fetchone()
     if total == None:
         total = 0
     return total
 
 def findMaxWeight(invenID: int):
-    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     max = mycursor.fetchone()
     if max == None:
         max = 0
     return max
 
 def findMinWeight(invenID: int):
-    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM JOIN ITEM ON Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
     min = mycursor.fetchone()
     if min == None:
         min = 0
