@@ -54,13 +54,15 @@ def login():
                     quit()
 
                 try:
-                    mycursor.execute("INSERT INTO USERS(Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s)", (id,psswrd,first,middle,last))
+                    mycursor.execute("SELECT MAX(User_ID) FROM USERS")
+                    thisID = mycursor.fetchone()[0] + 1
+                    mycursor.execute("INSERT INTO USERS(User_ID,Profile_Name,Password,F_name,M_Init,L_Name) VALUES (%s,%s,%s,%s,%s,%s)", (thisID,id,psswrd,first,middle,last))
                     db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 try:
-                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(userid,email))
-                    db.commit
+                    mycursor.execute("INSERT INTO USER_EMAIL(User_ID,email) VALUES (%s,%s)",(thisID,email))
+                    db.commit()
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("New account created, proceeding to login")
