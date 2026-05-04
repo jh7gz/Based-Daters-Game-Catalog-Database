@@ -92,9 +92,6 @@ def login():
 
     return userid
 
-
-    
-
 def createCatalog(id: int):
     name = ""
     while name == "":
@@ -300,7 +297,9 @@ def updateUser(id:int):
         print("1. Profile Name\t\t\t2. Password")
         print("3. First name\t\t\t4. Last name")
         print("5. Middle Initial\t\t\t6. Add an Email")
-        choice = int(input("What would you like to modfiy?"))
+        print("7. Remove an Email\t\t\t8. Modify an Email")
+        print("0. Quit")
+        choice = int(input("What would you like to modify?"))
         match choice:
             case 1:
                 alter = input("What would you like to update your Profile name to?")
@@ -325,6 +324,37 @@ def updateUser(id:int):
                 except mysql.connector.IntegrityError as err:
                     print("Error: {}".format(err))
                 print("Email added successfully")
+            case 7:
+                mycursor.execute("SELECT * FROM USER_EMAIL WHERE User_ID = (%s)",(id,))
+                count = 0
+                for x in mycursor:
+                    count += 1
+                if count <= 1:
+                    print("You only have 1 email and may not have less than 1 email.")
+            case 8:
+                found = 0
+                email = 0
+                while found == 0:
+                    print("Here are your options:")
+                    mycursor.execute("SELECT Email FROM USER_EMAIL WHERE User_ID = (%s)",(id,))
+                    for x in mycursor:
+                        for y in x:
+                            print(y)
+                    email = input("Which email would you like to modify.")
+                    if email == '0':
+                        break
+                    
+                    mycursor.execute("SELECT Email FROM USER_EMAIL WHERE Email = (%s)", (email,))
+                    
+                    for x in mycursor:
+                        found += 1
+
+                    if found == 0:
+                        print("That email does not exist. Please enter a valid email.")
+                newEmail = input("What would you like the new email to be?")
+                mycursor.execute("UPDATE USER_EMAIL SET Email = (%s) WHERE Email = (%s)",(newEmail,email))
+                print("Email updated successfully")
+
     pass
 
 def updateCatalog(id: int):

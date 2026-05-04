@@ -133,18 +133,19 @@ def menu(id = -1):
             # Modify tuple
             case 2:
                 choice = -1
-                while choice < 0 or choice > 3:
+                while choice < 0 or choice > 4:
                     print("What would you like to modify?")
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
+                    print("4. User Profile")
                     print("0. Back")
 
                     choice = input("")
                     try: choice = int(choice)
                     except: choice = -1
 
-                    if choice < 0 or choice > 3:
+                    if choice < 0 or choice > 4:
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
@@ -153,6 +154,8 @@ def menu(id = -1):
                         fr.modifyInventory(id)
                     case 3:
                         fr.modifyItem(id)
+                    case 4:
+                        fr.updateUser(id)
                     case 0:
                         menu(id)
                         break
