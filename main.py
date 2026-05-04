@@ -72,8 +72,8 @@ def Initial_setup():
     print("Setup complete.\n")
 
 
-    if os.path.exists("example.txt"):
-        os.remove("example.txt")
+    if os.path.exists("setupNoComments.sql"):
+        os.remove("setupNoComments.sql")
 
 def menu(id = -1):
     if id == -1:
@@ -259,6 +259,120 @@ def menu(id = -1):
                         fr.viewInventory()
                     case 3:
                         fr.viewItem()
+                    case 4:
+                        af.findCountCatalogs(id)
+                    case 5:
+                        af.findCountInventories(id)
+                    case 6:
+                        found = 0
+                        catalogID = 0
+                        while found == 0:
+                            print("Here are your options:")
+                            cursor.execute("SELECT Name FROM ITEM_CATALOG")
+                            for x in cursor:
+                                for y in x:
+                                    print(y)
+                            catalog = input("Which item catalog would you like to know the amount of items.")
+                            if catalog == '0':
+                                return
+                            
+                            cursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+                            
+                            for x in cursor:
+                                found += 1
+                                catalogID = x[0]
+
+                            if found == 0:
+                                print("That item catalog does not exist. Please enter a valid catalog.")
+                        af.findCountItemsCatalog(catalogID)
+                    case 7:
+                        found = 0
+                        invenID = 0
+                        while found == 0:
+                            print("Here are your options:")
+                            cursor.execute("SELECT Name FROM INVENTORY")
+                            for x in cursor:
+                                for y in x:
+                                    print(y)
+                            inven = input("Which inventory would you like to know the amount of items.")
+                            if catalog == '0':
+                                break
+                            
+                            cursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+                            
+                            for x in cursor:
+                                found += 1
+                                invenID = x[0]
+
+                            if found == 0:
+                                print("That inventory does not exist. Please enter a valid inventory.")
+                        af.findCountItemsInventory(invenID)
+                    case 8:
+                        found = 0
+                        invenID = 0
+                        while found == 0:
+                            print("Here are your options:")
+                            cursor.execute("SELECT Name FROM INVENTORY")
+                            for x in cursor:
+                                for y in x:
+                                    print(y)
+                            inven = input("Which inventory would you like to know the amount of items.")
+                            if catalog == '0':
+                                break
+                            
+                            cursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+                            
+                            for x in cursor:
+                                found += 1
+                                invenID = x[0]
+
+                            if found == 0:
+                                print("That inventory does not exist. Please enter a valid inventory.")
+                        af.findMaxWeight(invenID)
+                    case 9:
+                        found = 0
+                        invenID = 0
+                        while found == 0:
+                            print("Here are your options:")
+                            cursor.execute("SELECT Name FROM INVENTORY")
+                            for x in cursor:
+                                for y in x:
+                                    print(y)
+                            inven = input("Which inventory would you like to know the amount of items.")
+                            if catalog == '0':
+                                break
+                            
+                            cursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+                            
+                            for x in cursor:
+                                found += 1
+                                invenID = x[0]
+
+                            if found == 0:
+                                print("That inventory does not exist. Please enter a valid inventory.")
+                        af.findMinWeight(invenID)
+                    case 10:
+                        found = 0
+                        invenID = 0
+                        while found == 0:
+                            print("Here are your options:")
+                            cursor.execute("SELECT Name FROM INVENTORY")
+                            for x in cursor:
+                                for y in x:
+                                    print(y)
+                            inven = input("Which inventory would you like to know the amount of items.")
+                            if catalog == '0':
+                                break
+                            
+                            cursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inven,))
+                            
+                            for x in cursor:
+                                found += 1
+                                invenID = x[0]
+
+                            if found == 0:
+                                print("That inventory does not exist. Please enter a valid inventory.")
+                        af.findSumWeight(invenID)
                     case 0:
                         menu(id)
                         break

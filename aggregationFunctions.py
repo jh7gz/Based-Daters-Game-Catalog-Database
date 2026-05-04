@@ -49,3 +49,53 @@ def printItemInfo(id: int):
         effectDur = mycursor.execute("SELECT Duration FROM ITEM_EFFECT WHERE Item_ID = (%s)",(id,))
         print(f"Effect Duration: {effectDur}")
     print(f"Description: {itemDesc}")
+
+
+def findSumWeight(invenID: int):
+    mycursor.execute("SELECT SUM(Weight) FROM CONTAINS_ITEM JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    total = mycursor.fetchone()
+    if total == None:
+        total = 0
+    return total
+
+def findMaxWeight(invenID: int):
+    mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    max = mycursor.fetchone()
+    if max == None:
+        max = 0
+    return max
+
+def findMinWeight(invenID: int):
+    mycursor.execute("SELECT MIN(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
+    min = mycursor.fetchone()
+    if min == None:
+        min = 0
+    return min
+
+def findCountItemsInventory(invenID: int):
+    mycursor.execute("SELECT SUM(Quantity) FROM CONTAINS_ITEM WHERE Inventory_ID = (%s)", (invenID,))
+    total = mycursor.fetchone()
+    if total == None:
+        total = 0
+    return total
+
+def findCountItemsCatalog(catID: int):
+    count = 0
+    mycursor.execute("SELECT * FROM ITEM WHERE Catalog_ID = (%s)",(catID,))
+    for x in mycursor:
+        count+=1
+    return count
+
+def findCountInventories(id: int):
+    count = 0
+    mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE User_ID = (%s)",(id,))
+    for x in mycursor:
+        count+=1
+    return count
+
+def findCountCatalogs(id: int):
+    count = 0
+    mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE Creator_ID = (%s)",(id,))
+    for x in mycursor:
+        count+=1
+    return count
