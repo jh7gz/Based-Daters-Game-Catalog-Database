@@ -339,6 +339,8 @@ def updateUser(id:int):
                 mycursor.execute("UPDATE USERS SET L_Name = (%s) WHERE User_ID = (%s)",(alter,id))
             case 5:
                 alter = input("What would you like to update your Middle initial to?")
+                while len(alter) > 1:
+                    alter = input("Please input only middle initial: ")
                 mycursor.execute("UPDATE USERS SET M_Init = (%s) WHERE User_ID = (%s)",(alter,id))
             case 6:
                 alter = input("Which email would you like to add?")
@@ -355,6 +357,28 @@ def updateUser(id:int):
                     count += 1
                 if count <= 1:
                     print("You only have 1 email and may not have less than 1 email.")
+                else:
+                    found = 0
+                email = 0
+                while found == 0:
+                    print("Here are your options:")
+                    mycursor.execute("SELECT Email FROM USER_EMAIL WHERE User_ID = (%s)",(id,))
+                    for x in mycursor:
+                        for y in x:
+                            print(y)
+                    email = input("Which email would you like to delete.")
+                    if email == '0':
+                        break
+                    
+                    mycursor.execute("SELECT Email FROM USER_EMAIL WHERE Email = (%s)", (email,))
+                    
+                    for x in mycursor:
+                        found += 1
+
+                    if found == 0:
+                        print("That email does not exist. Please enter a valid email.")
+                mycursor.execute("UPDATE USER_EMAIL SET Email = (%s) WHERE Email = (%s)",(newEmail,email))
+                print("Email updated successfully")
             case 8:
                 found = 0
                 email = 0
@@ -375,9 +399,8 @@ def updateUser(id:int):
 
                     if found == 0:
                         print("That email does not exist. Please enter a valid email.")
-                newEmail = input("What would you like the new email to be?")
-                mycursor.execute("UPDATE USER_EMAIL SET Email = (%s) WHERE Email = (%s)",(newEmail,email))
-                print("Email updated successfully")
+                mycursor.execute("delete from USER_EMAIL where email = (%s)", (email,))
+                print("Email deleted successfully")
 
     pass
 
