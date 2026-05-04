@@ -100,8 +100,8 @@ def findMaxWeight():
         if found == 0:
             print("That inventory does not exist. Please enter a valid inventory.")
     mycursor.execute("SELECT MAX(Weight) FROM CONTAINS_ITEM  JOIN ITEM ON CONTAINS_ITEM.Item_ID = ITEM.Item_ID WHERE Inventory_ID = (%s)", (invenID,))
-    max = mycursor.fetchone()
-    if max[0] is None:
+    max[0] = mycursor.fetchone()
+    if max is None:
         max = 0
     return max
 
@@ -278,8 +278,8 @@ def getMaxWeightCatalog():
         if found == 0:
             print("That catalog does not exist. Please enter a valid catalog.")
     mycursor.execute("SELECT MAX(Weight) FROM ITEM_CATALOG JOIN ITEM ON ITEM_CATALOG.Catalog_ID = ITEM.Catalog_ID WHERE ITEM.Catalog_ID = (%s)", (catID,))
-    max = mycursor.fetchone()
-    if max[0] is None:
+    max[0] = mycursor.fetchone()
+    if max is None:
         max = 0
     return max
 
@@ -305,7 +305,7 @@ def getMinWeightInventory():
         if found == 0:
             print("That catalog does not exist. Please enter a valid catalog.")
     mycursor.execute("SELECT MIN(Weight) FROM ITEM_CATALOG JOIN ITEM ON ITEM_CATALOG.Catalog_ID = ITEM.Catalog_ID WHERE ITEM.Catalog_ID = (%s)", (catID,))
-    min = mycursor.fetchone()
-    if min[0] is None:
+    min[0] = mycursor.fetchone()
+    if min is None:
         min = 0
     return min
