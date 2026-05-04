@@ -296,11 +296,10 @@ def menu(id = -1):
             # Edit inventory
             case 7:
                 choice = -1
-                while choice < 0 or choice > 3:
+                while choice < 0 or choice > 2:
                     print("How would you like to edit your inventory?")
                     print("1. Equip an Item")
                     print("2. Add or Remove an Item")
-                    print("3. Craft an Item")
                     print("0. Back")
 
                     choice = input("")
@@ -314,8 +313,6 @@ def menu(id = -1):
                         fr.equipItem(id)
                     case 2:
                         fr.updateInventory(id)
-                    case 3:
-                        fr.craftItem(id)
                     case 0:
                         menu(id)
                         break
