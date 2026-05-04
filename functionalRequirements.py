@@ -377,7 +377,8 @@ def updateUser(id:int):
 
                     if found == 0:
                         print("That email does not exist. Please enter a valid email.")
-                mycursor.execute("UPDATE USER_EMAIL SET Email = (%s) WHERE Email = (%s)",(newEmail,email))
+                mycursor.execute("delete from USER_EMAIL where email = (%s)", (email,))
+                
                 print("Email updated successfully")
             case 8:
                 found = 0
@@ -399,8 +400,9 @@ def updateUser(id:int):
 
                     if found == 0:
                         print("That email does not exist. Please enter a valid email.")
-                mycursor.execute("delete from USER_EMAIL where email = (%s)", (email,))
-                print("Email deleted successfully")
+                newEmail = input("What would you like the new email to be")
+                mycursor.execute("UPDATE USER_EMAIL SET Email = (%s) WHERE Email = (%s)",(newEmail,email))
+                print("Email updated successfully")
 
     pass
 
