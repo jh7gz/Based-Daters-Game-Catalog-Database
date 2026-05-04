@@ -165,7 +165,9 @@ def createInventory(id: int):
 
     db.commit()
 
-def createItem(id: int): #Implement last 4 flag constraints found in phase 3 doc TODO
+#TODO add ranges and types
+
+def createItem(id: int): 
     found = 0
     while found == 0:
         catalog = input("Which item catalog would you like to create an item for.")
@@ -297,6 +299,8 @@ def updateCatalog(id: int):
     print("Catalog successfully updated")
     db.commit()
 
+
+# TODO add ranges and types of weapon/armor. Add ability to modify effects
 def modifyItem(id: int):
 
     while True:
@@ -532,73 +536,78 @@ def equipItem(id: int):
     db.commit()
 
 def searchCatalog(id: int):
-    found = 0
-    catalogID = 0
-    while found == 0:
-        catalog = input("What is the name of the Catalog you would like to search?")
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That catalog does not exist. Please enter a valid catalog.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE(Creator_ID,Catalog_ID) = (%s,%s)", (id,mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (catalog,))))
-            for x in mycursor:
-                newFound += 1
-            mycursor.execute("SELECT * FROM USER_EDIT_INVENTORY WHERE(User_ID,Catalog_ID) = (%s,%s)", (id,mycursor.execute("SELECT Catalog_ID FROM INVENTORY WHERE Name = (%s)", (catalog,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have access to this Catalog. Please enter a catalog you have access to.")
-                found = 0
-            catalogID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (catalog,))
-    
-    found = 0
-    item = input("What is the item you are searching for?")
-    mycursor.execute("SELECT * FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item, catalogID))
-    for x in mycursor:
-        found += 1
-    if found == 0:
-        print("The item was not found in this catalog.")
-    else:
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item,catalogID))
-        af.printItemInfo(itemID)
-    pass
+
+    while True:
+        catalog = input("What is the name of the Catalog you would like to search? ")
+        if catalog == '0':
+            return
+
+        mycursor.execute("SELECT catalog_id FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
+        try: catalogID = mycursor.fetchone()[0]
+        except: 
+            print("No such catalog exists! ")
+            continue
+        
+        mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE(Creator_ID,Catalog_ID) = (%s,%s)", (id,catalogID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have access to this catalog! ")
+            continue
+
+        break
+
+    while True:
+        item = input("What is the name of the item you are searching for? ")
+        if item == '0':
+            return
+
+        mycursor.execute("SELECT item_id FROM item WHERE (Name,catalog_id) = (%s,%s)", (item,catalogID,))
+        try: itemID = mycursor.fetchone()[0]
+        except: 
+            print("No such item exists! ")
+            continue
+        break
+
+    af.printItemInfo(itemID)
+
 
 def searchInventory(id: int):
-    found = 0
-    invenID = 0
-    inventory = 0
-    while found == 0:
-        inventory = input("Which inventory would you like to search.")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That inventory does not exist. Please enter a valid inventory.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that inventory")
-                found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
 
-    found = 0
-    item = input("What is the item you are searching for?")
-    mycursor.execute("SELECT * FROM CONTAINS_ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item, invenID))
-    for x in mycursor:
-        found += 1
-    if found == 0:
-        print("The item was not found in this inventory.")
-    else:
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Inventory_ID) = (%s,%s)", (item,invenID))
-        af.printItemInfo(itemID)
+    while True:
+        inventory = input("What is the name of the inventory you would like to search? ")
+        if inventory == '0':
+            return
 
-    pass
+        mycursor.execute("SELECT inventory_id FROM inventory WHERE Name = (%s)", (inventory,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such inventory exists! ")
+            continue
+        
+        mycursor.execute("SELECT * FROM user_edit_inventory WHERE(user_id,inventory_id) = (%s,%s)", (id,invenID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have access to this inventory! ")
+            continue
+
+        break
+    mycursor.execute("select catalog_id from inventory where inventory_id = (%s)", (invenID,))
+    catalogID = mycursor.fetchone()[0]
+
+    while True:
+        item = input("What is the name of the item you are searching for? ")
+        if item == '0':
+            return
+
+        mycursor.execute("SELECT item_id FROM item WHERE (Name,catalog_id) = (%s,%s)", (item,catalogID,))
+        try: itemID = mycursor.fetchone()[0]
+        except: 
+            print("No such item exists! ")
+            continue
+        break
+
+    af.printItemInfo(itemID)
+
 
 def searchSystem(id: int):
     found = 0
