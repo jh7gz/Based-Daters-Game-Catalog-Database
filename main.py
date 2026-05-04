@@ -234,7 +234,7 @@ def menu(id = -1):
             # View tuples
             case 6:
                 choice = -1
-                while choice < 0 or choice > 10:
+                while choice < 0 or choice > 14:
                     print("What would you like to view?")
                     print("1. Catalog")
                     print("2. Inventory")
@@ -246,13 +246,17 @@ def menu(id = -1):
                     print("8. Max Item Weight in a chosen Inventory")
                     print("9. Min Item Weight in a chosen Inventory")
                     print("10. Total Item Weight in a chosen Inventory")
+                    print("11. Creators who can edit a chosen Catalog")
+                    print("12. Users who can edit a chosen Inventory")
+                    print("13. Max Item Weight in a chosen Catalog")
+                    print("14. Min Item Weight in a chosen Catalog")
                     print("0. Back")
 
                     choice = input("")
                     try: choice = int(choice)
                     except: choice = -1
 
-                    if choice < 0 or choice > 10:
+                    if choice < 0 or choice > 14:
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
@@ -275,6 +279,14 @@ def menu(id = -1):
                         print(af.findMinWeight())
                     case 10:
                         print(af.findSumWeight())
+                    case 11:
+                        print(af.findCountCreatorsEditCatalog())
+                    case 12:
+                        print(af.findCountUsersEditInventory())
+                    case 13:
+                        print(af.getMaxWeightCatalog())
+                    case 14: 
+                        print(af.getMinWeightInventory())
                     case 0:
                         menu(id)
                         break
