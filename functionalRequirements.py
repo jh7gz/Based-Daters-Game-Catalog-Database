@@ -204,12 +204,15 @@ def createItem(id: int):
     
     rarity = input("What is the rarity of your item?")
     number = input("What is the total quantity of the item?")
+    try: int(number)
+    except: number = 1
     desc = input("What is the description of your item?")
     cat = input("Does your item have a category? If none, put 0.")
-    if cat == "0":
+    if cat == "0" or cat == '':
         cat = None
     weight = input("What is your items weight in kilograms? Please enter up to 2 decimal places.")
-    weight = float(weight)
+    try: weight = float(weight)
+    except: weight = float(1)
     weight = round(weight,2)
     resource = input("Is your item a resource? Put 0 if false, and 1 if true.")
     if resource == "1":
@@ -220,18 +223,26 @@ def createItem(id: int):
     weaparm = input("Is your item a weapon or armor? Put 0 if false, and 1 if true.")
     if weaparm == "1":
         weaparm = True
+        print("This item will automatically not be a consumable, because weapons/armor cannot also be consumables.")
+        consumable = False
     else:
         weaparm = False
         consumable = input("Is your item a consumable? Put 0 if false, and 1 if true.")
-    if consumable == "1":
-        consumable = True
+        if consumable == "1":
+            consumable = True
+        else:
+            consumable = False
+    if weaparm == True and resource == True:
+        upgrade = input("Is your item an upgradable item? Put 0 if false, and 1 if true.")
     else:
-        consumable = False
-    upgrade = input("Is your item an upgradable item? Put 0 if false, and 1 if true.")
+        print("Item cannot be upgradable if it is not a weapon and a resource.")
+        upgrade = False
     if upgrade == "1":
         upgrade = True
     else:
         upgrade = False
+
+    # print(catalogID,weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade)
     try:
         mycursor.execute("INSERT INTO ITEM(Catalog_ID,Weight, Overall_Quan,Description,Category,Rarity,Name,C_Flag,R_Flag,WA_Flag,UI_Flag) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (catalogID,weight,number,desc,cat,rarity,name,consumable,resource,weaparm,upgrade,))
     except mysql.connector.IntegrityError as err:
@@ -689,96 +700,95 @@ def sortInventory(id: int):
     
 
 def deleteCatalog(id: int):
-    found = 0
-    catalogID = 0
-    while found == 0:
-        catalog = input("What is the name of the Catalog you would like to delete?")
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        for x in mycursor:
-            found += 1
-            catalogID = x[0]
-        if found == 0:
-            print("That catalog does not exist. Please enter a valid catalog.")
-        else:
-            newFound = 0
-            mycursor.execute("SELECT * FROM CREATOR_EDIT_CATALOG WHERE(Creator_ID,Catalog_ID) = (%s,%s)", (id,catalogID))
-            for x in mycursor:
-                newFound += 1
-                print(catalogID)
-            if newFound == 0:
-                print("You do not have access to this Catalog. Please enter a catalog you have access to.")
-                found = 0
-            #catalogID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (catalog,))
 
-    choice = "no"
-    while choice != "yes" or choice != "Yes":
-        choice = input("Are you sure you would like to delete this catalog?")
-    mycursor.execute("DELETE FROM ITEM_CATALOG WHERE Catalog_ID = (%s)", (catalogID,))
-    pass
+    while True:
+        catalog = input("What is the name of the catalog you would like to delete? ")
+        if catalog == '0':
+            return
+
+        mycursor.execute("SELECT catalog_id FROM item_catalog WHERE Name = (%s)", (catalog,))
+        try: catalogID = mycursor.fetchone()[0]
+        except: 
+            print("No such catalog exists! ")
+            continue
+        
+        mycursor.execute("SELECT * FROM creator_edit_catalog WHERE (creator_id, catalog_id) = (%s, %s)", (id,catalogID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have access to this catalog! ")
+            continue
+        break
+
+    confirm = input("Are you sure you wish to delete this catalog?(y/n) \n")
+    if confirm == 'y':
+        print("Catalog deleted!")
+        mycursor.execute("delete from item_catalog where catalog_id = (%s)", (catalogID,))
+        return
+    else:
+        print("Catalog NOT deleted!")
+        return
+
 
 def deleteInventory(id: int):
-    found = 0
-    invenID = 0
-    inventory = 0
-    while found == 0:
-        inventory = input("Which inventory would you like to delete.")
-        mycursor.execute("SELECT * FROM INVENTORY WHERE Name = (%s)", (inventory,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That inventory does not exist. Please enter a valid inventory.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * USER_EDIT_INVENTORY WHERE (User_ID,Inventory_ID) = (%s,%s)", (id, mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that inventory")
-                found = 0
-        invenID = mycursor.execute("SELECT Inventory_ID FROM INVENTORY WHERE Name = (%s)", (inventory,))
-    
-    choice = "no"
-    while choice != "yes" or choice != "Yes":
-        choice = input("Are you sure you would like to delete this catalog?")
-    mycursor.execute("DELETE FROM INVENTORY WHERE Inventory_ID = (%s)", (invenID,))
-    pass
+
+    while True:
+        inventory = input("What is the name of the inventory you would like to delete? ")
+        if inventory == '0':
+            return
+
+        mycursor.execute("SELECT inventory_id FROM inventory WHERE Name = (%s)", (inventory,))
+        try: invenID = mycursor.fetchone()[0]
+        except: 
+            print("No such inventory exists! ")
+            continue
+        
+        mycursor.execute("SELECT * FROM user_edit_inventory WHERE (user_id, inventory_id) = (%s, %s)", (id,invenID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have access to this inventory! ")
+            continue
+        break
+
+    confirm = input("Are you sure you wish to delete this inventory?(y/n) \n")
+    if confirm == 'y':
+        print("Inventory deleted!")
+        mycursor.execute("delete from inventory where inventory_id = (%s)", (invenID,))
+        return
+    else:
+        print("Inventory NOT deleted!")
+        return
 
 def deleteItem(id: int):
-    found = 0
-    catalogID = 0
-    while found == 0:
-        catalog = input("Which item catalog would you like to delete an item from.")
-        mycursor.execute("SELECT * FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That item catlog does not exist. Please enter a valid catalog.")
-        if found != 0:
-            newFound = 0
-            mycursor.execute("SELECT * CREATOR_EDIT_CATALOG WHERE (Creator_ID,Catalog_ID) = (%s,%s)", (id, mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))))
-            for x in mycursor:
-                newFound += 1
-            if newFound == 0:
-                print("You do not have edit access for that catalog")
-                found = 0
-        catalogID = mycursor.execute("SELECT Catalog_ID FROM ITEM_CATALOG WHERE Name = (%s)", (catalog,))
     
-    found = 0
-    itemID = 0
-    while found == 0:
-        item = input("Which item would you like to delete?")
-        mycursor.execute("SELECT * FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item,catalogID))
-        for x in mycursor:
-            found += 1
-        if found == 0:
-            print("That item does not exist in this catalog. Please enter a valid item.")
-        itemID = mycursor.execute("SELECT Item_ID FROM ITEM WHERE (Name,Catalog_ID) = (%s,%s)", (item,catalogID))
+    while True:
+        item = input("What is the name of the item you would like to delete? ")
+        if item == '0':
+            return
 
-    choice = "no"
-    while choice != "yes" or choice != "Yes":
-        choice = input("Are you sure you would like to delete this item?")
-    mycursor.execute("DELETE FROM ITEM WHERE Catalog_ID = (%s)", (itemID,))
-    pass
+        mycursor.execute("SELECT item_id FROM item WHERE Name = (%s)", (item,))
+        try: itemID = mycursor.fetchone()[0]
+        except: 
+            print("No such item exists! ")
+            continue
+
+        mycursor.execute("select catalog_id from item where item_ID = (%s)", (itemID,))
+        catalogID = mycursor.fetchone()[0]
+        
+        mycursor.execute("SELECT * FROM creator_edit_catalog WHERE (creator_id, catalog_id) = (%s, %s)", (id,catalogID))
+        try: mycursor.fetchone()[0]
+        except:
+            print("You do not have permission to delete this item! ")
+            continue
+        break
+
+    confirm = input("Are you sure you wish to delete this item?(y/n) \n")
+    if confirm == 'y':
+        print("Item deleted!")
+        mycursor.execute("delete from item where item_id = (%s)", (itemID,))
+        return
+    else:
+        print("Item NOT deleted!")
+        return
 
 def updateInventory(id: int):
     found = 0
