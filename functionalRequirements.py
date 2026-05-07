@@ -1206,4 +1206,3 @@ def viewItem():
 
 def craftItem(id: int):
     pass
-

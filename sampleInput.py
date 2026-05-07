@@ -226,5 +226,3 @@ def Populate_All():
     Populate_WEAPON_ARMOR_EQUIPPED(numInventories)
 
     db.commit()
-
-
