@@ -237,15 +237,15 @@ def menu(id = -1):
             # View tuples
             case 6:
                 choice = -1
-                while choice < 0 or choice > 14:
+                while choice < 0 or choice > 16:
                     print("What would you like to view?")
                     print("1. Catalog")
                     print("2. Inventory")
                     print("3. Item")
                     print("4. Number of your Catalogs")
                     print("5. Number of your Inventories")
-                    print("6. Items in a chosen Catalog")
-                    print("7. Items in a chosen Inventory")
+                    print("6. Number of items in a chosen Catalog")
+                    print("7. Number of items in a chosen Inventory")
                     print("8. Max Item Weight in a chosen Inventory")
                     print("9. Min Item Weight in a chosen Inventory")
                     print("10. Total Item Weight in a chosen Inventory")
@@ -253,13 +253,15 @@ def menu(id = -1):
                     print("12. Users who can edit a chosen Inventory")
                     print("13. Max Item Weight in a chosen Catalog")
                     print("14. Min Item Weight in a chosen Catalog")
+                    print("15. Items in Catalog")
+                    print("16. Items in Inventory")
                     print("0. Back")
 
                     choice = input("")
                     try: choice = int(choice)
                     except: choice = -1
 
-                    if choice < 0 or choice > 14:
+                    if choice < 0 or choice > 16:
                         print("Invalid choice, please try again")
                 match choice:
                     case 1:
@@ -290,6 +292,11 @@ def menu(id = -1):
                         print(af.getMaxWeightCatalog())
                     case 14: 
                         print(af.getMinWeightInventory())
+                    case 15:
+                        print("ok")
+                        fr.viewItemsInCatalog()
+                    case 16:
+                        fr.viewItemsInInventory()
                     case 0:
                         menu(id)
                         break

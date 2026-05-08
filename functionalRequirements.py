@@ -1220,5 +1220,39 @@ def viewItem():
         print (x)
     pass
 
+def viewItemsInCatalog():
+    while True:
+        catalog = input("Which catalog would you like to view items from? ")
+
+        mycursor.execute("SELECT catalog_id FROM item_catalog WHERE Name = (%s)", (catalog,))
+        try:
+            catalogID = mycursor.fetchone()[0]
+            break
+        except:
+            print("No such catalog exists! ")
+            continue
+
+    mycursor.execute("SELECT * FROM ITEM where catalog_id = (%s)", (catalogID,))
+    print(f"Items in Catalog {catalog}:")
+    for x in mycursor:
+        print(x)
+
+def viewItemsInInventory():
+    while True:
+        inventory = input("Which inventory would you like to view items from? ")
+
+        mycursor.execute("SELECT inventory_id FROM inventory WHERE Name = (%s)", (inventory,))
+        try:
+            inventoryID = mycursor.fetchone()[0]
+            break
+        except:
+            print("No such inventory exists! ")
+            continue
+
+    mycursor.execute("SELECT * FROM contains_item join item on item.item_id = contains_item.item_id WHERE contains_item.inventory_id = (%s)", (inventoryID,))
+    print(f"Items in Inventory {inventory}:")
+    for x in mycursor:
+        print(x)
+
 def craftItem(id: int):
     pass
