@@ -1142,6 +1142,9 @@ def updateInventory(id: int):
             print("No such inventory exists! ")
             continue
 
+        mycursor.execute("SELECT catalog_id FROM inventory WHERE inventory_id = (%s) and name = (%s)", (invenID, inventory))
+        catalogID = mycursor.fetchone()[0]
+
         mycursor.execute("SELECT * FROM user_edit_inventory WHERE (user_id, inventory_id) = (%s, %s)", (id,invenID))
         try: mycursor.fetchone()[0]
         except:
@@ -1150,22 +1153,24 @@ def updateInventory(id: int):
         break
 
     while True:
-        item = input("What is the name of the item you would like to modify? ")
+        item = input("What is the name of the item you would like to add/remove? ")
         if item == '0':
             return
         
-        mycursor.execute("Select item_id from item where name = (%s)", (item,))
-        itemID = mycursor.fetchone()[0]
-
-        mycursor.execute("SELECT * FROM inventory_id WHERE (item_id, Inventory_ID) = (%s,%s)", (itemID, invenID))
+        mycursor.execute("SELECT item_id FROM item WHERE Catalog_ID = (%s) AND Name = (%s)", (catalogID, item))
         try: itemID = mycursor.fetchone()[0]
         except: 
-            print("No such item exists in this inventory! ")
+            print("No such item exists! ")
             continue
+
+        mycursor.execute("SELECT quantity FROM contains_item WHERE (item_id, Inventory_ID) = (%s,%s)", (itemID, invenID))
+        try: quantity = mycursor.fetchone()[0]
+        except: 
+            quantity = 0
         break
 
     while True:
-        choice = input("Would you like to add or remove the item from your inventory? (Add = 1, Remove = 2, Quit = 0)")
+        choice = input("Would you like to add or remove some of the item from your inventory? You currently have {quantity} of this item.(Add = 1, Remove = 2, Quit = 0)".format(quantity=quantity))
         try: choice = int(choice)
         except:
             print("Please enter a valid input!")
@@ -1173,18 +1178,27 @@ def updateInventory(id: int):
         if choice < 0 or choice > 2:
             print("Please enter a valid input! ")
             continue
+        if choice == 0:
+            return
         if choice == 1:
             add = int(input("How much of the item would you like to add?"))
-            if add <= af.checkQuanity(itemID):
-                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add,itemID,invenID))
+            if add <= af.checkQuantity(itemID):
+                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (add+quantity,itemID,invenID))
+                if quantity == 0:
+                    mycursor.execute("INSERT INTO Contains_Item (inventory_ID, Catalog_id, item_id, quantity) VALUES (%s, %s, %s, %s)", (invenID, catalogID, itemID, add))
+                db.commit()
                 print("Item Added Successfully")
+                break
             else:
-                print ("There is not enough of this item to add to your inventory, please enter a valid number")
+                print ("There is not enough of this item to add to your inventory, please enter a valid number.")
 
         if choice == 2:
-            remove = int(input("How much of the item would you like to add?"))
-            if remove <= mycursor.execute("SELECT Quantity FROM CONTAINS_ITEM WHERE Item_ID = (%s)", (itemID,)):
-                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (remove,itemID,invenID))
+            remove = int(input("How much of the item would you like to remove?"))
+            if remove <= quantity:
+                mycursor.execute("UPDATE CONTAINS_ITEM SET Quantity = (%s) WHERE (Item_ID, Inventory_ID) = (%s,%s)", (quantity-remove,itemID,invenID))
+                db.commit()
+                print("Item Removed Successfully")
+                break
             else:
                 print("You are trying to remove too much of the item from your inventory, please try again.")
 
